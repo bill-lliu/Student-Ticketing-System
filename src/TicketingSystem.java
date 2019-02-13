@@ -34,8 +34,8 @@ public class TicketingSystem extends JFrame{
 	//main class variables
 	static JFrame window;
 	JPanel gamePanel;
-	ArrayList<Student> AllStudents;
-
+	ArrayList<Student> studentList = new ArrayList<Student>();
+		
 	//main method
 	public static void main(String[] args) {
 	     window = new TicketingSystem();
@@ -68,9 +68,43 @@ public class TicketingSystem extends JFrame{
    				FileReader MyReader = new FileReader(eventName + ".txt");
    				BufferedReader MyBuffer = new BufferedReader(MyReader);
    				
+   				//reading the file and adding the strings to the student list
+   				String nextLine;
+   				while ((nextLine = MyBuffer.readLine()) != null) {
+   					String[] tmpStrings = nextLine.split(";");
+   					
+   					//trims off spaces of each variable that may have been entered
+   					for (int i=0; i<tmpStrings.length; i++) {
+   						tmpStrings[i] = tmpStrings[i].trim();
+   					}
+   					//changes the diet restriction from a string to an array list
+   					String[] tmpDietResString = tmpStrings[2].split(",");
+   					ArrayList<String> tmpDietResList = new ArrayList<String>();
+   					for (int i=0; i<tmpDietResString.length; i++) {//trimming spaces
+   						tmpDietResList.add(tmpDietResString[i].trim());//adding to temporary array list
+   					}
+   					//changes the friends's student numbers from a string to an array list
+   					String[] tmpStudentNumString = tmpStrings[3].split(",");
+   					ArrayList<String> tmpStudentNumList = new ArrayList<String>();
+   					for (int i=0; i<tmpStudentNumString.length; i++) {//trimming spaces
+   						tmpStudentNumList.add(tmpStudentNumString[i].trim());//adding to temporary array list
+   					}
+   					
+   					//adds the student to the master student list
+   					Student student = new Student(tmpStrings[0], tmpStrings[1], tmpDietResList, tmpStudentNumList);
+   					studentList.add(student);
+   					
+   					/*System.out.println(studentList.get(0).getName() + ", " 
+   							+ studentList.get(0).getStudentNumber() + ", " 
+   							+ studentList.get(0).getDietaryRestrictions() + ", " 
+   							+ studentList.get(0).getFriendStudentNumbers()); 
+   							sample output */
+   					
+   				}
    				
+   				MyBuffer.close();//closes buffer so file does not corrupt
    			} catch (IOException e) {
-   				System.out.println("biggo error");
+   				System.out.println("error while reading file");
    			}
    		   		
    		} else {
@@ -81,9 +115,9 @@ public class TicketingSystem extends JFrame{
    				FileWriter MyWriter = new FileWriter(eventName + ".txt");
    				PrintWriter MyPrinter = new PrintWriter(MyWriter);
    				
-   				
+   				MyPrinter.close();//closes printer so file does not corrupt
    			} catch (IOException e) {
-   				System.out.println("biggo error");
+   				System.out.println("error while writing file");
    			}
    			
    		}
