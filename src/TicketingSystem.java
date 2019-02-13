@@ -44,7 +44,7 @@ public class TicketingSystem extends JFrame{
 	}
 
 	//----------------------Initial System Constructor-------------------
-   	TicketingSystem() { 
+   	TicketingSystem() {
    		super("Ticketing System");  
    		
    		//creates variables to write and draw
@@ -153,7 +153,7 @@ public class TicketingSystem extends JFrame{
    	
    	
    	
-   	//---------------------------Home Page Class---------------------------
+   	//---------------------------Home Page Display---------------------------
    	private class HomePagePanel extends JPanel {
    	    public void paintComponent(Graphics g) {
    	       super.paintComponent(g); //required
@@ -173,6 +173,32 @@ public class TicketingSystem extends JFrame{
 
         return panel;
     }
+   	
+   	
+   	
+   	//------------------------Add Student Display-------------------
+   	private class AddStudentPanel extends JPanel {
+   	    public void paintComponent(Graphics g) {
+   	       super.paintComponent(g); //required
+   	       setDoubleBuffered(true); 
+   	       
+   	       //insert here stuff that would happen every frame here
+   	       
+   	       }
+   	}
+   	
+   	
+   	//------------------------View Current List Display-------------------
+   	private class StudentListPanel extends JPanel {
+   	    public void paintComponent(Graphics g) {
+   	       super.paintComponent(g); //required
+   	       setDoubleBuffered(true); 
+   	       
+   	       //insert here stuff that would happen every frame here
+   	       
+   	       }
+   	}
+   	
    	
    	
    	//--------------------------Mouse Listener Class---------------------
