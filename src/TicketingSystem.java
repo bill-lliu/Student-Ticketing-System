@@ -140,7 +140,8 @@ public class TicketingSystem extends JFrame{
    	    
    	    //Set up the display panel
    	    gamePanel = new HomePagePanel();
-   	    this.add(new HomePagePanel());
+   	    this.add(new HomePagePanel()); 
+		this.setTitle(eventName);
 	    this.setVisible(true);
    	    this.requestFocusInWindow(); //make sure the frame has focus
 	    
@@ -148,7 +149,7 @@ public class TicketingSystem extends JFrame{
    	    MyMouseListener mouseListener = new MyMouseListener();
    	    this.addMouseListener(mouseListener);
    	    
-   	}//end of constructor
+   	}//end of constructor 
    	
    	
    	
