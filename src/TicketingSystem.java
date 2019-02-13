@@ -47,10 +47,8 @@ public class TicketingSystem extends JFrame{
    	TicketingSystem() {
    		super("Ticketing System");  
    		
-   		//creates variables to write and draw
+   		//creates variables used in this class
    		String eventName;
-   		
-   		
    		
    		//the program will try to find the event data which is saved as a text file
    		//if the file does not exist, it will generate a new file with this name
@@ -102,10 +100,10 @@ public class TicketingSystem extends JFrame{
    					Student student = new Student(tmpStrings[0], tmpStrings[1], tmpDietResList, tmpStudentNumList);
    					studentList.add(student);
    					
-   					/*System.out.println(studentList.get(0).getName() + ", " 
+   					System.out.println(studentList.get(0).getName() + ", " 
    							+ studentList.get(0).getStudentNumber() + ", " 
    							+ studentList.get(0).getDietaryRestrictions() + ", " 
-   							+ studentList.get(0).getFriendStudentNumbers()); */
+   							+ studentList.get(0).getFriendStudentNumbers());
    					
    				}//end while loop for reading info
    				
@@ -155,6 +153,11 @@ public class TicketingSystem extends JFrame{
    	
    	//---------------------------Home Page Display---------------------------
    	private class HomePagePanel extends JPanel {
+   		
+   		//variables to be used in this class
+   		JPanel mainPanel;
+   		JButton viewCurrentStudentList;
+   		
    	    public void paintComponent(Graphics g) {
    	       super.paintComponent(g); //required
    	       setDoubleBuffered(true); 
