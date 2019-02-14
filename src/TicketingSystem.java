@@ -216,7 +216,15 @@ public class TicketingSystem extends JFrame{
 				String friends = "";
 				for (int i = 0; i < ((studentList.get(row)).getFriendStudentNumbers()).size(); i++) {
 					if (i != 0) friends += ", ";
+					//put in method later
+					//Find other friend names
+					String friendNumber = ((studentList.get(row)).getFriendStudentNumbers()).get(i);
+					String friendName = "";
+					for (int j = 0; j < studentList.size(); j++) {
+						if (((studentList.get(j)).getStudentNumber()).equals(friendNumber)) friendName = (studentList.get(j)).getName();
+					}
 					friends += ((studentList.get(row)).getFriendStudentNumbers()).get(i);
+					if (!(friendName.equals(""))) friends += ("(" + friendName + ")");
 				}
 				data[row][3] = friends;
 			}
