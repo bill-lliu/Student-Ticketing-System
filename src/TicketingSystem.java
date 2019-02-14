@@ -10,6 +10,8 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JTable;
+import javax.swing.JScrollPane;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -32,224 +34,207 @@ import java.util.ArrayList;
 
 @SuppressWarnings("serial")
 public class TicketingSystem extends JFrame{
-	
+
 	//main class variables
 	static JFrame window;
-	JPanel mainPanel;
+	JPanel gamePanel;
+	JPanel listPanel;
 	ArrayList<Student> studentList = new ArrayList<Student>();
-		
+
 	//main method
 	public static void main(String[] args) {
-	     window = new TicketingSystem();
+		window = new TicketingSystem();
 	}
 
 	//----------------------Initial System Constructor-------------------
-   	TicketingSystem() {
-   		super("Ticketing System");  
-   		
-   		//creates variables used in this class
-   		String eventName;
-   		
-   		//the program will try to find the event data which is saved as a text file
-   		//if the file does not exist, it will generate a new file with this name
-   		
-   		//asks the user for the name of the file
-   		eventName = JOptionPane.showInputDialog(null, "What is the name of your event?" + "\n" + "(Enter a new name for a new event)", "RHHS Event Organizer", JOptionPane.PLAIN_MESSAGE);
+	TicketingSystem() {
+		super("Ticketing System");
 
-   		//in case the user clicks out of the panel without entering anything
-   		if (eventName == null) {
-   			System.exit(0);
-   		}
-   		
-   		//initiates the file
-   		File eventTextFile = new File(eventName + ".txt");
+		//creates variables to write and draw
+		String eventName;
 
 
-   		//********If a file is found**************
-   		if (eventTextFile.exists() && !eventTextFile.isDirectory()) {
-   			//reading from the file to fill variables
-   			System.out.println("file successfully found... collecting data");
-   			try {
-   				//creates the writer for the file
-   				FileReader MyReader = new FileReader(eventName + ".txt");
-   				BufferedReader MyBuffer = new BufferedReader(MyReader);
-   				
-   				//reading the file and adding the strings to the student list
-   				String nextLine;
-   				while ((nextLine = MyBuffer.readLine()) != null) {
-   					String[] tmpStrings = nextLine.split(";");
-   					
-   					//trims off spaces of each variable that may have been entered
-   					for (int i=0; i<tmpStrings.length; i++) {
-   						tmpStrings[i] = tmpStrings[i].trim();
-   					}
-   					//changes the diet restriction from a string to an array list
-   					String[] tmpDietResString = tmpStrings[2].split(",");
-   					ArrayList<String> tmpDietResList = new ArrayList<String>();
-   					for (int i=0; i<tmpDietResString.length; i++) {//trimming spaces
-   						tmpDietResList.add(tmpDietResString[i].trim());//adding to temporary array list
-   					}
-   					//changes the friends's student numbers from a string to an array list
-   					String[] tmpStudentNumString = tmpStrings[3].split(",");
-   					ArrayList<String> tmpStudentNumList = new ArrayList<String>();
-   					for (int i=0; i<tmpStudentNumString.length; i++) {//trimming spaces
-   						tmpStudentNumList.add(tmpStudentNumString[i].trim());//adding to temporary array list
-   					}
-   					
-   					//adds the student to the master student list
-   					Student student = new Student(tmpStrings[0], tmpStrings[1], tmpDietResList, tmpStudentNumList);
-   					studentList.add(student);
-   					
-   					System.out.println(studentList.get(0).getName() + ", " 
-   							+ studentList.get(0).getStudentNumber() + ", " 
-   							+ studentList.get(0).getDietaryRestrictions() + ", " 
-   							+ studentList.get(0).getFriendStudentNumbers());
-   					
-   				}//end while loop for reading info
-   				
-   				
-   				MyBuffer.close();//closes buffer so file does not corrupt
-   				
-   			} catch (IOException e) {
-   				System.out.println("error while reading file");
-   			}
-   		
-   		
-   		//********If no file of that name is found***************
-   		} else {
-   			//creating the event with the input event name
-   			System.out.println("no file of that name found... generating new file");
-   			try {
-   				//creates the writer for the file
-   				FileWriter MyWriter = new FileWriter(eventName + ".txt");
-   				MyWriter.close();
-   			} catch (IOException e) {
-   				System.out.println("error while writing file");
-   			}
-   			
-   		}
-   		
-   		//********starts the panel
-   		// Set the frame to full screen 
-   	    this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-   	    this.setSize(Toolkit.getDefaultToolkit().getScreenSize());
-   	    //this.setUndecorated(true);  //Set to true to remove title bar
-   	    //frame.setResizable(false);
-   	    
-   	    //Set up the display panel
-   	    mainPanel = new HomePagePanel();
-   	    this.add(mainPanel); 
+
+		//the program will try to find the event data which is saved as a text file
+		//if the file does not exist, it will generate a new file with this name
+
+		//asks the user for the name of the file
+		eventName = JOptionPane.showInputDialog(null, "What is the name of your event?" + "\n" + "(Enter a new name for a new event)", "RHHS Event Organizer", JOptionPane.PLAIN_MESSAGE);
+
+		//in case the user clicks out of the panel without entering anything
+		if (eventName == null) {
+			System.exit(0);
+		}
+
+		//initiates the file
+		File eventTextFile = new File(eventName + ".txt");
+
+
+		//********If a file is found**************
+		if (eventTextFile.exists() && !eventTextFile.isDirectory()) {
+			//reading from the file to fill variables
+			System.out.println("file successfully found... collecting data");
+			try {
+				//creates the writer for the file
+				FileReader MyReader = new FileReader(eventName + ".txt");
+				BufferedReader MyBuffer = new BufferedReader(MyReader);
+
+				//reading the file and adding the strings to the student list
+				String nextLine;
+				while ((nextLine = MyBuffer.readLine()) != null) {
+					String[] tmpStrings = nextLine.split(";");
+
+					//trims off spaces of each variable that may have been entered
+					for (int i=0; i<tmpStrings.length; i++) {
+						tmpStrings[i] = tmpStrings[i].trim();
+					}
+					//changes the diet restriction from a string to an array list
+					String[] tmpDietResString = tmpStrings[2].split(",");
+					ArrayList<String> tmpDietResList = new ArrayList<String>();
+					for (int i=0; i<tmpDietResString.length; i++) {//trimming spaces
+						tmpDietResList.add(tmpDietResString[i].trim());//adding to temporary array list
+					}
+					//changes the friends's student numbers from a string to an array list
+					String[] tmpStudentNumString = tmpStrings[3].split(",");
+					ArrayList<String> tmpStudentNumList = new ArrayList<String>();
+					for (int i=0; i<tmpStudentNumString.length; i++) {//trimming spaces
+						tmpStudentNumList.add(tmpStudentNumString[i].trim());//adding to temporary array list
+					}
+
+					//adds the student to the master student list
+					Student student = new Student(tmpStrings[0], tmpStrings[1], tmpDietResList, tmpStudentNumList);
+					studentList.add(student);
+
+   					/*System.out.println(studentList.get(0).getName() + ", "
+   							+ studentList.get(0).getStudentNumber() + ", "
+   							+ studentList.get(0).getDietaryRestrictions() + ", "
+   							+ studentList.get(0).getFriendStudentNumbers()); */
+
+				}//end while loop for reading info
+
+
+				MyBuffer.close();//closes buffer so file does not corrupt
+
+			} catch (IOException e) {
+				System.out.println("error while reading file");
+			}
+
+
+			//********If no file of that name is found***************
+		} else {
+			//creating the event with the input event name
+			System.out.println("no file of that name found... generating new file");
+			try {
+				//creates the writer for the file
+				FileWriter MyWriter = new FileWriter(eventName + ".txt");
+				MyWriter.close();
+			} catch (IOException e) {
+				System.out.println("error while writing file");
+			}
+
+		}
+
+		//********starts the panel
+		// Set the frame to full screen
+		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.setSize(Toolkit.getDefaultToolkit().getScreenSize());
+		//this.setUndecorated(true);  //Set to true to remove title bar
+		//frame.setResizable(false);
+
+		//Set up the display panel
+		gamePanel = new AddStudentPanel();
+		listPanel = new StudentListPanel();
+		this.add(new AddStudentPanel());
+		this.add(new StudentListPanel());
 		this.setTitle(eventName);
-	    this.setVisible(true);
-   	    this.requestFocusInWindow(); //make sure the frame has focus
-	    
-   	    //initiates listener
-   	    MyMouseListener mouseListener = new MyMouseListener();
-   	    this.addMouseListener(mouseListener);
-   	    
-   	}//end of constructor 
-   	
-   	
-   	
-   	//---------------------------Home Page Display---------------------------
-   	private class HomePagePanel extends JPanel {
-   		
-   		//variables to branch to other classes
-   		JPanel viewStudentListPanel, addStudentPanel;
-   		
-   		
-   		//constructor for this class that will only run once
-   		HomePagePanel(){
-   			
-   			//parts of the Home Page Panel
-    	    //greeting at the top
-   			JPanel topPanel = new JPanel();
-    	    JLabel greeting = new JLabel("I would like to...");
- 	       	topPanel.add(greeting, BorderLayout.CENTER);
- 	       	this.add(topPanel, BorderLayout.CENTER);
-    	       
- 	       	//left button
- 	       	JPanel leftPanel = new JPanel();
- 	       	JButton viewStudentListButton = new JButton("View Current Student List");
- 	       	leftPanel.add(viewStudentListButton, BorderLayout.WEST);
- 	       	JLabel note1 = new JLabel("(You may edit/remove students from here)");
- 	       	leftPanel.add(note1, BorderLayout.WEST);
- 	       	this.add(leftPanel, BorderLayout.WEST);
- 	       
- 	       	//right button
- 	       	JPanel rightPanel = new JPanel();
- 	       	JButton addStudentButton = new JButton("Add New Student");
- 	       	rightPanel.add(addStudentButton, BorderLayout.EAST);
- 	       	this.add(rightPanel, BorderLayout.EAST);
- 	       	
- 	       	//bottom button
- 	       	JPanel bottomPanel = new JPanel();
- 	       	JButton seatingArrangementButton = new JButton("Generate Seating Arrangement");
- 	       	bottomPanel.add(seatingArrangementButton, BorderLayout.PAGE_END);
- 	       	JLabel note2 = new JLabel("(Click when all students attending" + "\n" + "the event have been added)");
- 	       	bottomPanel.add(note2, BorderLayout.PAGE_END);
- 	       	this.add(bottomPanel, BorderLayout.PAGE_END);
- 	       	
- 	       	//exit button
- 	       	JPanel exitPanel = new JPanel();
- 	       	JButton saveAndExitButton = new JButton("Save and Exit Program");
- 	       	exitPanel.add(saveAndExitButton, BorderLayout.LINE_END);
- 	       	this.add(exitPanel, BorderLayout.LINE_END);
- 	       	
-   		}
-   		
-   		public void paintComponent(Graphics g) {
-   	       super.paintComponent(g); //required
-   	       setDoubleBuffered(true); 
-   	       
-   	       
-   	       //insert here stuff that would happen every frame
-   	       
-   	       }
-   	}
-   	
-   	private JPanel createMainPanel() {
-        JPanel panel = new JPanel();
-        panel.setLayout(new BorderLayout());
+		this.setVisible(true);
+		this.requestFocusInWindow(); //make sure the frame has focus
 
-        JButton myButton = new JButton("My Button");
-        panel.add(myButton);
+		//initiates listener
+		MyMouseListener mouseListener = new MyMouseListener();
+		this.addMouseListener(mouseListener);
 
-        return panel;
-    }
-   	
-   	
-   	
-   	//------------------------Add Student Display-------------------
-   	private class AddStudentPanel extends JPanel {
-   	    public void paintComponent(Graphics g) {
-   	       super.paintComponent(g); //required
-   	       setDoubleBuffered(true); 
-   	       
-   	       //insert here stuff that would happen every frame here
-   	       
-   	       }
-   	}
-   	
-   	
-   	//------------------------View Current List Display-------------------
-   	private class StudentListPanel extends JPanel {
-   	    public void paintComponent(Graphics g) {
-   	       super.paintComponent(g); //required
-   	       setDoubleBuffered(true); 
-   	       
-   	       //insert here stuff that would happen every frame here
-   	       
-   	       }
-   	}
-   	
-   	
-   	
-   	//--------------------------Mouse Listener Class---------------------
-   	private class MyMouseListener implements MouseListener {
-        
-   		//write if statement for if mouse is clicked then do action where clicked
-   		
+	}//end of constructor
+
+
+
+	//---------------------------Home Page Display---------------------------
+	private class HomePagePanel extends JPanel {
+		public void paintComponent(Graphics g) {
+			super.paintComponent(g); //required
+			setDoubleBuffered(true);
+
+			//insert here stuff that would happen every frame
+
+		}
+	}
+
+	private JPanel createMainPanel() {
+		JPanel panel = new JPanel();
+		panel.setLayout(new BorderLayout());
+
+		JButton myButton = new JButton("My Button");
+		panel.add(myButton);
+
+		return panel;
+	}
+
+
+
+	//------------------------Add Student Display-------------------
+	private class AddStudentPanel extends JPanel {
+		public void paintComponent(Graphics g) {
+			super.paintComponent(g); //required
+			setDoubleBuffered(true);
+
+		}
+	}
+
+
+	//------------------------View Current List Display-------------------
+	private class StudentListPanel extends JPanel {
+
+
+		public void paintComponent(Graphics g) {
+			super.paintComponent(g); //required
+			setDoubleBuffered(true);
+			//Column names
+			String[] columnNames = { "Name", "Student Number", "Dietary Restrictions", "Friends" };
+			//Convert ArrayList of students to array
+			String[][] data = new String[studentList.size()][4];
+			for (int row = 0; row < studentList.size(); row++) {
+				data[row][0] = (studentList.get(row)).getName();
+				data[row][1] = (studentList.get(row)).getStudentNumber();
+				//Format dietary restrictions
+				String diet = "";
+				for (int i = 0; i < ((studentList.get(row)).getDietaryRestrictions()).size(); i++) {
+					if (i != 0) diet += ", ";
+					diet += ((studentList.get(row)).getDietaryRestrictions()).get(i);
+				}
+				data[row][2] = diet;
+				//Format friends
+				String friends = "";
+				for (int i = 0; i < ((studentList.get(row)).getFriendStudentNumbers()).size(); i++) {
+					if (i != 0) friends += ", ";
+					friends += ((studentList.get(row)).getFriendStudentNumbers()).get(i);
+				}
+				data[row][3] = friends;
+			}
+			//Create JTable
+			JTable table = new JTable(data, columnNames);
+			//Create JScrollPane
+			JScrollPane sp = new JScrollPane(table);
+			this.add(sp);
+		}
+	}
+
+
+
+	//--------------------------Mouse Listener Class---------------------
+	private class MyMouseListener implements MouseListener {
+
+		//write if statement for if mouse is clicked then do action where clicked
+
 		public void mouseClicked(MouseEvent e) {
 			// TODO Auto-generated method stub
 		}
@@ -265,8 +250,8 @@ public class TicketingSystem extends JFrame{
 		public void mouseReleased(MouseEvent e) {
 			// TODO Auto-generated method stub
 		}
-		
-      }//end of mouse listener
-   	
-   	
+
+	}//end of mouse listener
+
+
 }
