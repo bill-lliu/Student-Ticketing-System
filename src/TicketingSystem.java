@@ -95,10 +95,13 @@ public class TicketingSystem extends JFrame{
 						tmpDietResList.add(tmpDietResString[i].trim());//adding to temporary array list
 					}
 					//changes the friends's student numbers from a string to an array list
-					String[] tmpStudentNumString = tmpStrings[3].split(",");
 					ArrayList<String> tmpStudentNumList = new ArrayList<String>();
-					for (int i=0; i<tmpStudentNumString.length; i++) {//trimming spaces
-						tmpStudentNumList.add(tmpStudentNumString[i].trim());//adding to temporary array list
+					//check if student has friends
+					if (tmpStrings.length == 4) {
+						String[] tmpStudentNumString = tmpStrings[3].split(",");
+						for (int i=0; i<tmpStudentNumString.length; i++) {//trimming spaces
+							tmpStudentNumList.add(tmpStudentNumString[i].trim());//adding to temporary array list
+						}
 					}
 
 					//adds the student to the master student list
