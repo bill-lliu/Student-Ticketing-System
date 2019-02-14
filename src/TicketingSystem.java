@@ -35,7 +35,7 @@ public class TicketingSystem extends JFrame{
 	
 	//main class variables
 	static JFrame window;
-	JPanel gamePanel;
+	JPanel mainPanel;
 	ArrayList<Student> studentList = new ArrayList<Student>();
 		
 	//main method
@@ -137,8 +137,8 @@ public class TicketingSystem extends JFrame{
    	    //frame.setResizable(false);
    	    
    	    //Set up the display panel
-   	    gamePanel = new HomePagePanel();
-   	    this.add(new HomePagePanel()); 
+   	    mainPanel = new HomePagePanel();
+   	    this.add(mainPanel); 
 		this.setTitle(eventName);
 	    this.setVisible(true);
    	    this.requestFocusInWindow(); //make sure the frame has focus
@@ -154,13 +154,54 @@ public class TicketingSystem extends JFrame{
    	//---------------------------Home Page Display---------------------------
    	private class HomePagePanel extends JPanel {
    		
-   		//variables to be used in this class
-   		JPanel mainPanel;
-   		JButton viewCurrentStudentList;
+   		//variables to branch to other classes
+   		JPanel viewStudentListPanel, addStudentPanel;
    		
-   	    public void paintComponent(Graphics g) {
+   		
+   		//constructor for this class that will only run once
+   		HomePagePanel(){
+   			
+   			//parts of the Home Page Panel
+    	    //greeting at the top
+   			JPanel topPanel = new JPanel();
+    	    JLabel greeting = new JLabel("I would like to...");
+ 	       	topPanel.add(greeting, BorderLayout.CENTER);
+ 	       	this.add(topPanel, BorderLayout.CENTER);
+    	       
+ 	       	//left button
+ 	       	JPanel leftPanel = new JPanel();
+ 	       	JButton viewStudentListButton = new JButton("View Current Student List");
+ 	       	leftPanel.add(viewStudentListButton, BorderLayout.WEST);
+ 	       	JLabel note1 = new JLabel("(You may edit/remove students from here)");
+ 	       	leftPanel.add(note1, BorderLayout.WEST);
+ 	       	this.add(leftPanel, BorderLayout.WEST);
+ 	       
+ 	       	//right button
+ 	       	JPanel rightPanel = new JPanel();
+ 	       	JButton addStudentButton = new JButton("Add New Student");
+ 	       	rightPanel.add(addStudentButton, BorderLayout.EAST);
+ 	       	this.add(rightPanel, BorderLayout.EAST);
+ 	       	
+ 	       	//bottom button
+ 	       	JPanel bottomPanel = new JPanel();
+ 	       	JButton seatingArrangementButton = new JButton("Generate Seating Arrangement");
+ 	       	bottomPanel.add(seatingArrangementButton, BorderLayout.PAGE_END);
+ 	       	JLabel note2 = new JLabel("(Click when all students attending" + "\n" + "the event have been added)");
+ 	       	bottomPanel.add(note2, BorderLayout.PAGE_END);
+ 	       	this.add(bottomPanel, BorderLayout.PAGE_END);
+ 	       	
+ 	       	//exit button
+ 	       	JPanel exitPanel = new JPanel();
+ 	       	JButton saveAndExitButton = new JButton("Save and Exit Program");
+ 	       	exitPanel.add(saveAndExitButton, BorderLayout.LINE_END);
+ 	       	this.add(exitPanel, BorderLayout.LINE_END);
+ 	       	
+   		}
+   		
+   		public void paintComponent(Graphics g) {
    	       super.paintComponent(g); //required
    	       setDoubleBuffered(true); 
+   	       
    	       
    	       //insert here stuff that would happen every frame
    	       
