@@ -227,10 +227,8 @@ public class TicketingSystem extends JFrame{
 
 	//------------------------View Current List Display-------------------
 	private class StudentListPanel extends JPanel {
+		StudentListPanel() {
 
-		public void paintComponent(Graphics g) {
-			super.paintComponent(g); //required
-			setDoubleBuffered(true);
 			//Column names
 			String[] columnNames = { "Name", "Student Number", "Dietary Restrictions", "Friends" };
 			//Convert ArrayList of students to array
@@ -266,6 +264,12 @@ public class TicketingSystem extends JFrame{
 			//Create JScrollPane
 			JScrollPane sp = new JScrollPane(table);
 			this.add(sp);
+
+		}
+		public void paintComponent(Graphics g) {
+			super.paintComponent(g); //required
+			setDoubleBuffered(true);
+			
 		}
 	}
 
