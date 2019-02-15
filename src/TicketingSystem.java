@@ -46,6 +46,37 @@ public class TicketingSystem extends JFrame{
 		window = new TicketingSystem();
 	}
 
+	//Gets a student when given student number OR name
+
+	private Student findStudent(String identifier) {
+		//If given a student number
+		if (isNumber(identifier)) {
+			for (Student student : studentList) {
+				if ((student.getStudentNumber()).equals(identifier)) return student;
+			}
+		}
+		//If given a student name
+		else {
+			for (Student student : studentList) {
+				if ((student.getName()).equals(identifier)) return student;
+			}
+		}
+		//If student not found
+		return null;
+	}
+
+	private boolean isNumber(String text) {
+		//Is a student number
+		try {
+			Integer.parseInt(text);
+		}
+		//Is student name
+		catch (NumberFormatException | NullPointerException e) {
+			return false;
+		}
+		return true;
+	}
+
 	//----------------------Initial System Constructor-------------------
 	TicketingSystem() {
 		super("Ticketing System");
@@ -219,15 +250,14 @@ public class TicketingSystem extends JFrame{
 				String friends = "";
 				for (int i = 0; i < ((studentList.get(row)).getFriendStudentNumbers()).size(); i++) {
 					if (i != 0) friends += ", ";
-					//put in method later
-					//Find other friend names
+					//Find other friends names if available
 					String friendNumber = ((studentList.get(row)).getFriendStudentNumbers()).get(i);
-					String friendName = "";
-					for (int j = 0; j < studentList.size(); j++) {
-						if (((studentList.get(j)).getStudentNumber()).equals(friendNumber)) friendName = (studentList.get(j)).getName();
+					Student friend = findStudent(friendNumber);
+					if (friend != null) {
+						friends += friend.getName();
+					} else {
+						friends += friendNumber;
 					}
-					friends += ((studentList.get(row)).getFriendStudentNumbers()).get(i);
-					if (!(friendName.equals(""))) friends += ("(" + friendName + ")");
 				}
 				data[row][3] = friends;
 			}
