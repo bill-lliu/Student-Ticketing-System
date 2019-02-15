@@ -11,6 +11,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTable;
+import javax.swing.table.AbstractTableModel;
 import javax.swing.JScrollPane;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -224,10 +225,8 @@ public class TicketingSystem extends JFrame{
 		}
 	}
 
-
 	//------------------------View Current List Display-------------------
 	private class StudentListPanel extends JPanel {
-
 
 		public void paintComponent(Graphics g) {
 			super.paintComponent(g); //required
@@ -263,6 +262,7 @@ public class TicketingSystem extends JFrame{
 			}
 			//Create JTable
 			JTable table = new JTable(data, columnNames);
+			table.setEnabled(false);
 			//Create JScrollPane
 			JScrollPane sp = new JScrollPane(table);
 			this.add(sp);
