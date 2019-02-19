@@ -99,7 +99,7 @@ public class TicketingSystem extends JFrame{
 		}
 
 		//initiates the file
-		File eventTextFile = new File(eventName + ".txt");
+		File eventTextFile = new File(eventName + ".csv");
 
 
 		//********If a file is found**************
@@ -108,20 +108,20 @@ public class TicketingSystem extends JFrame{
 			System.out.println("file successfully found... collecting data");
 			try {
 				//creates the writer for the file
-				FileReader MyReader = new FileReader(eventName + ".txt");
+				FileReader MyReader = new FileReader(eventName + ".csv");
 				BufferedReader MyBuffer = new BufferedReader(MyReader);
 
 				//reading the file and adding the strings to the student list
 				String nextLine;
 				while ((nextLine = MyBuffer.readLine()) != null) {
-					String[] tmpStrings = nextLine.split(";");
+					String[] tmpStrings = nextLine.split(",");
 
 					//trims off spaces of each variable that may have been entered
 					for (int i=0; i<tmpStrings.length; i++) {
 						tmpStrings[i] = tmpStrings[i].trim();
 					}
 					//changes the diet restriction from a string to an array list
-					String[] tmpDietResString = tmpStrings[2].split(",");
+					String[] tmpDietResString = tmpStrings[2].split(";");
 					ArrayList<String> tmpDietResList = new ArrayList<String>();
 					for (int i=0; i<tmpDietResString.length; i++) {//trimming spaces
 						tmpDietResList.add(tmpDietResString[i].trim());//adding to temporary array list
@@ -130,7 +130,7 @@ public class TicketingSystem extends JFrame{
 					ArrayList<String> tmpStudentNumList = new ArrayList<String>();
 					//check if student has friends
 					if (tmpStrings.length == 4) {
-						String[] tmpStudentNumString = tmpStrings[3].split(",");
+						String[] tmpStudentNumString = tmpStrings[3].split(";");
 						for (int i=0; i<tmpStudentNumString.length; i++) {//trimming spaces
 							tmpStudentNumList.add(tmpStudentNumString[i].trim());//adding to temporary array list
 						}
@@ -140,10 +140,10 @@ public class TicketingSystem extends JFrame{
 					Student student = new Student(tmpStrings[0], tmpStrings[1], tmpDietResList, tmpStudentNumList);
 					studentList.add(student);
 
-   					/*System.out.println(studentList.get(0).getName() + ", "
+   					System.out.println(studentList.get(0).getName() + ", "
    							+ studentList.get(0).getStudentNumber() + ", "
    							+ studentList.get(0).getDietaryRestrictions() + ", "
-   							+ studentList.get(0).getFriendStudentNumbers()); */
+   							+ studentList.get(0).getFriendStudentNumbers());
 
 				}//end while loop for reading info
 
@@ -161,7 +161,7 @@ public class TicketingSystem extends JFrame{
 			System.out.println("no file of that name found... generating new file");
 			try {
 				//creates the writer for the file
-				FileWriter MyWriter = new FileWriter(eventName + ".txt");
+				FileWriter MyWriter = new FileWriter(eventName + ".csv");
 				MyWriter.close();
 			} catch (IOException e) {
 				System.out.println("error while writing file");
@@ -204,7 +204,7 @@ public class TicketingSystem extends JFrame{
 		}
 	}
 
-	private JPanel createMainPanel() {
+	/*private JPanel createMainPanel() {
 		JPanel panel = new JPanel();
 		panel.setLayout(new BorderLayout());
 
@@ -212,7 +212,7 @@ public class TicketingSystem extends JFrame{
 		panel.add(myButton);
 
 		return panel;
-	}
+	}*/
 
 
 
