@@ -170,6 +170,7 @@ public class TicketingSystem extends JFrame{
 			      MyBuilder.append("Friends");
 			      MyBuilder.append('\n');
 
+			      MyWriter.write(MyBuilder.toString());
 				
 				MyWriter.close();
 			} catch (IOException e) {
