@@ -162,6 +162,15 @@ public class TicketingSystem extends JFrame{
 			try {
 				//creates the writer for the file
 				FileWriter MyWriter = new FileWriter(eventName + ".csv");
+				
+				StringBuilder MyBuilder = new StringBuilder();
+			      MyBuilder.append("Name,");
+			      MyBuilder.append("Student Number,");
+			      MyBuilder.append("Dietary Restrictions,");
+			      MyBuilder.append("Friends");
+			      MyBuilder.append('\n');
+
+				
 				MyWriter.close();
 			} catch (IOException e) {
 				System.out.println("error while writing file");
