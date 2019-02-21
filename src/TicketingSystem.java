@@ -26,6 +26,8 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 //file input output
 import java.io.BufferedReader;
 import java.io.File;
@@ -245,6 +247,9 @@ public class TicketingSystem extends JFrame{
 
 	//------------------------View Current List Display-------------------
 	private class StudentListPanel extends JPanel {
+		ClickListener click = new ClickListener();
+		JButton backButton = new JButton("Back");
+		JButton editButton = new JButton("Edit Student");
 		StudentListPanel() {
 			this.setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
 			//Column names
@@ -285,17 +290,30 @@ public class TicketingSystem extends JFrame{
 			tablePanel.add(sp);
 			//Create buttons
 			JPanel buttonPanel = new JPanel(new FlowLayout());
-			JButton backButton = new JButton("Back");
+
 			backButton.setVerticalTextPosition(JButton.CENTER);
 			backButton.setHorizontalTextPosition(JButton.CENTER);
-			JButton editButton = new JButton("Edit Student");
+
 			editButton.setVerticalTextPosition(JButton.CENTER);
 			editButton.setHorizontalTextPosition(JButton.CENTER);
+			editButton.addActionListener(click);
+
 			buttonPanel.add(backButton);
 			buttonPanel.add(editButton);
 			this.add(tablePanel);
 			this.add(buttonPanel);
+
 		}
+
+		private class ClickListener implements ActionListener {
+			public void actionPerformed(ActionEvent e) {
+				if (e.getSource() == editButton) {
+					String studentNumber = JOptionPane.showInputDialog(null, "Enter student number:", "Edit Student", JOptionPane.PLAIN_MESSAGE);
+				}
+			}
+		}
+
+
 		public void paintComponent(Graphics g) {
 			super.paintComponent(g); //required
 			setDoubleBuffered(true);
