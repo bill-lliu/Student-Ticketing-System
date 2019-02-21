@@ -114,36 +114,35 @@ public class TicketingSystem extends JFrame{
 				//reading the file and adding the strings to the student list
 				String nextLine;
 				while ((nextLine = MyBuffer.readLine()) != null) {
-					String[] tmpStrings = nextLine.split(",");
+					//For csv files, don't split commas inside of quotation marks
+					String[] tmpStrings = nextLine.split(",(?=([^\"]*\"[^\"]*\")*[^\"]*$)", -1);
 
 					//trims off spaces of each variable that may have been entered
 					for (int i=0; i<tmpStrings.length; i++) {
 						tmpStrings[i] = tmpStrings[i].trim();
 					}
+
 					//changes the diet restriction from a string to an array list
-					String[] tmpDietResString = tmpStrings[2].split(";");
+					String[] tmpDietResString = tmpStrings[2].split(",");
 					ArrayList<String> tmpDietResList = new ArrayList<String>();
 					for (int i=0; i<tmpDietResString.length; i++) {//trimming spaces
 						tmpDietResList.add(tmpDietResString[i].trim());//adding to temporary array list
 					}
 					//changes the friends's student numbers from a string to an array list
+					String[] tmpStudentNumString = tmpStrings[3].split(",");
 					ArrayList<String> tmpStudentNumList = new ArrayList<String>();
-					//check if student has friends
-					if (tmpStrings.length == 4) {
-						String[] tmpStudentNumString = tmpStrings[3].split(";");
-						for (int i=0; i<tmpStudentNumString.length; i++) {//trimming spaces
-							tmpStudentNumList.add(tmpStudentNumString[i].trim());//adding to temporary array list
-						}
+					for (int i=0; i<tmpStudentNumString.length; i++) {//trimming spaces
+						tmpStudentNumList.add(tmpStudentNumString[i].trim());//adding to temporary array list
 					}
 
 					//adds the student to the master student list
 					Student student = new Student(tmpStrings[0], tmpStrings[1], tmpDietResList, tmpStudentNumList);
 					studentList.add(student);
 
-   					System.out.println(studentList.get(0).getName() + ", "
+   					/*System.out.println(studentList.get(0).getName() + ", "
    							+ studentList.get(0).getStudentNumber() + ", "
    							+ studentList.get(0).getDietaryRestrictions() + ", "
-   							+ studentList.get(0).getFriendStudentNumbers());
+   							+ studentList.get(0).getFriendStudentNumbers());*/
 
 				}//end while loop for reading info
 
