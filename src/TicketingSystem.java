@@ -279,6 +279,7 @@ public class TicketingSystem extends JFrame{
 			table.setEnabled(false);
 			//Create JScrollPane
 			JScrollPane sp = new JScrollPane(table);
+			this.setLayout(new BorderLayout());
 			this.add(sp);
 
 		}
