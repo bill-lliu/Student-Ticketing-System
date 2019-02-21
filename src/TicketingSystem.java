@@ -126,12 +126,14 @@ public class TicketingSystem extends JFrame{
 					String[] tmpDietResString = tmpStrings[2].split(",");
 					ArrayList<String> tmpDietResList = new ArrayList<String>();
 					for (int i=0; i<tmpDietResString.length; i++) {//trimming spaces
+						tmpDietResString[i] = tmpDietResString[i].replace("\"", ""); //strip quotation marks
 						tmpDietResList.add(tmpDietResString[i].trim());//adding to temporary array list
 					}
 					//changes the friends's student numbers from a string to an array list
 					String[] tmpStudentNumString = tmpStrings[3].split(",");
 					ArrayList<String> tmpStudentNumList = new ArrayList<String>();
 					for (int i=0; i<tmpStudentNumString.length; i++) {//trimming spaces
+						tmpStudentNumString[i] = tmpStudentNumString[i].replace("\"", ""); //strip quotation marks
 						tmpStudentNumList.add(tmpStudentNumString[i].trim());//adding to temporary array list
 					}
 
