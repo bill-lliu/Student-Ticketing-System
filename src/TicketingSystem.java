@@ -43,7 +43,7 @@ public class TicketingSystem extends JFrame{
 
 	//main class variables
 	static JFrame window;
-	JPanel gamePanel;
+	JPanel mainPanel;
 	JPanel listPanel;
 	ArrayList<Student> studentList = new ArrayList<Student>();
 
@@ -170,14 +170,14 @@ public class TicketingSystem extends JFrame{
 				//creates the writer for the file
 				FileWriter MyWriter = new FileWriter(eventName + ".csv");
 				
-				StringBuilder MyBuilder = new StringBuilder();
+				/*StringBuilder MyBuilder = new StringBuilder();
 			      MyBuilder.append("Name,");
 			      MyBuilder.append("Student Number,");
 			      MyBuilder.append("Dietary Restrictions,");
 			      MyBuilder.append("Friends");
 			      MyBuilder.append('\n');
 
-			      MyWriter.write(MyBuilder.toString());
+			      MyWriter.write(MyBuilder.toString());*/ //no longer necessary;
 				
 				MyWriter.close();
 			} catch (IOException e) {
@@ -186,7 +186,7 @@ public class TicketingSystem extends JFrame{
 
 		}
 
-		//********starts the panel
+		//********starts the panel***************
 		// Set the frame to full screen
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setSize(Toolkit.getDefaultToolkit().getScreenSize());
@@ -194,7 +194,8 @@ public class TicketingSystem extends JFrame{
 		//frame.setResizable(false);
 
 		//Set up the display panel
-		gamePanel = new AddStudentPanel();
+		
+		mainPanel = new AddStudentPanel();
 		listPanel = new StudentListPanel();
 		this.setLayout(new BorderLayout());
 		this.add(new AddStudentPanel());
@@ -204,9 +205,9 @@ public class TicketingSystem extends JFrame{
 		this.setVisible(true);
 		this.requestFocusInWindow(); //make sure the frame has focus
 
-		//initiates listener
+		/*//initiates listener
 		MyMouseListener mouseListener = new MyMouseListener();
-		this.addMouseListener(mouseListener);
+		this.addMouseListener(mouseListener);*/ // no longer needed
 
 	}//end of constructor
 
@@ -323,7 +324,7 @@ public class TicketingSystem extends JFrame{
 
 
 
-	//--------------------------Mouse Listener Class---------------------
+	/*//--------------------------Mouse Listener Class---------------------
 	private class MyMouseListener implements MouseListener {
 
 		//write if statement for if mouse is clicked then do action where clicked
@@ -344,7 +345,7 @@ public class TicketingSystem extends JFrame{
 			// TODO Auto-generated method stub
 		}
 
-	}//end of mouse listener
+	}//end of mouse listener*/ // no longer needed
 
 
 }
