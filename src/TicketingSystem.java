@@ -11,6 +11,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTable;
+import javax.swing.border.Border;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.JScrollPane;
 import java.awt.BorderLayout;
@@ -112,7 +113,8 @@ public class TicketingSystem extends JFrame{
 				BufferedReader MyBuffer = new BufferedReader(MyReader);
 
 				//reading the file and adding the strings to the student list
-				String nextLine;
+				//Need to read first line in order to remove titles from data
+				String nextLine = MyBuffer.readLine();
 				while ((nextLine = MyBuffer.readLine()) != null) {
 					//For csv files, don't split commas inside of quotation marks
 					String[] tmpStrings = nextLine.split(",(?=([^\"]*\"[^\"]*\")*[^\"]*$)", -1);
@@ -190,9 +192,11 @@ public class TicketingSystem extends JFrame{
 		//Set up the display panel
 		gamePanel = new AddStudentPanel();
 		listPanel = new StudentListPanel();
+		this.setLayout(new BorderLayout());
 		this.add(new AddStudentPanel());
-		this.add(new StudentListPanel());
+		this.add(new StudentListPanel(), BorderLayout.CENTER);
 		this.setTitle(eventName);
+		this.pack();
 		this.setVisible(true);
 		this.requestFocusInWindow(); //make sure the frame has focus
 
@@ -229,6 +233,7 @@ public class TicketingSystem extends JFrame{
 
 	//------------------------Add Student Display-------------------
 	private class AddStudentPanel extends JPanel {
+
 		public void paintComponent(Graphics g) {
 			super.paintComponent(g); //required
 			setDoubleBuffered(true);
@@ -262,7 +267,7 @@ public class TicketingSystem extends JFrame{
 					String friendNumber = ((studentList.get(row)).getFriendStudentNumbers()).get(i);
 					Student friend = findStudent(friendNumber);
 					if (friend != null) {
-						friends += friend.getName();
+						friends += friend.getName() + " (" + friendNumber + ")";
 					} else {
 						friends += friendNumber;
 					}
