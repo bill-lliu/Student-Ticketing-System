@@ -13,8 +13,10 @@ import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.border.Border;
 import javax.swing.table.AbstractTableModel;
-import javax.swing.JScrollPane;
+import javax.swing.BoxLayout;
 import java.awt.BorderLayout;
+import java.awt.FlowLayout;
+import javax.swing.JScrollPane;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Graphics;
@@ -244,7 +246,7 @@ public class TicketingSystem extends JFrame{
 	//------------------------View Current List Display-------------------
 	private class StudentListPanel extends JPanel {
 		StudentListPanel() {
-
+			this.setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
 			//Column names
 			String[] columnNames = { "Name", "Student Number", "Dietary Restrictions", "Friends" };
 			//Convert ArrayList of students to array
@@ -275,13 +277,24 @@ public class TicketingSystem extends JFrame{
 				data[row][3] = friends;
 			}
 			//Create JTable
+			JPanel tablePanel = new JPanel(new BorderLayout());
 			JTable table = new JTable(data, columnNames);
 			table.setEnabled(false);
 			//Create JScrollPane
 			JScrollPane sp = new JScrollPane(table);
-			this.setLayout(new BorderLayout());
-			this.add(sp);
-
+			tablePanel.add(sp);
+			//Create buttons
+			JPanel buttonPanel = new JPanel(new FlowLayout());
+			JButton backButton = new JButton("Back");
+			backButton.setVerticalTextPosition(JButton.CENTER);
+			backButton.setHorizontalTextPosition(JButton.CENTER);
+			JButton editButton = new JButton("Edit Student");
+			editButton.setVerticalTextPosition(JButton.CENTER);
+			editButton.setHorizontalTextPosition(JButton.CENTER);
+			buttonPanel.add(backButton);
+			buttonPanel.add(editButton);
+			this.add(tablePanel);
+			this.add(buttonPanel);
 		}
 		public void paintComponent(Graphics g) {
 			super.paintComponent(g); //required
