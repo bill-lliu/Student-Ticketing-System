@@ -43,9 +43,9 @@ public class TicketingSystem extends JFrame{
 
 	//main class variables
 	static JFrame window;
-	JPanel mainPanel;
-	JPanel listPanel;
-	ArrayList<Student> studentList = new ArrayList<Student>();
+	private JPanel mainPanel;
+	private JPanel listPanel;
+	private ArrayList<Student> studentList = new ArrayList<Student>();
 
 	//main method
 	public static void main(String[] args) {
@@ -195,11 +195,10 @@ public class TicketingSystem extends JFrame{
 
 		//Set up the display panel
 		
-		mainPanel = new AddStudentPanel();
+		mainPanel = new HomePagePanel();
 		listPanel = new StudentListPanel();
 		this.setLayout(new BorderLayout());
-		this.add(new AddStudentPanel());
-		this.add(new StudentListPanel(), BorderLayout.CENTER);
+		this.add(mainPanel, BorderLayout.CENTER);
 		this.setTitle(eventName);
 		this.pack();
 		this.setVisible(true);
@@ -215,6 +214,14 @@ public class TicketingSystem extends JFrame{
 
 	//---------------------------Home Page Display---------------------------
 	private class HomePagePanel extends JPanel {
+		ClickListener click = new ClickListener();
+		JButton listButton = new JButton("View Student List");
+		//JButton editButton = new JButton("Edit Student");
+		HomePagePanel() {
+			this.add(listButton);
+			listButton.addActionListener(click);
+		}
+
 		public void paintComponent(Graphics g) {
 			super.paintComponent(g); //required
 			setDoubleBuffered(true);
@@ -222,6 +229,18 @@ public class TicketingSystem extends JFrame{
 			//insert here stuff that would happen every frame
 
 		}
+
+		private class ClickListener implements ActionListener {
+			public void actionPerformed(ActionEvent e) {
+				if (e.getSource() == listButton) {
+					window.remove(mainPanel);
+					window.add(listPanel, BorderLayout.CENTER);
+					window.repaint();
+					window.pack();
+				}
+			}
+		}
+
 	}
 
 	/*private JPanel createMainPanel() {
@@ -294,6 +313,7 @@ public class TicketingSystem extends JFrame{
 
 			backButton.setVerticalTextPosition(JButton.CENTER);
 			backButton.setHorizontalTextPosition(JButton.CENTER);
+			backButton.addActionListener(click);
 
 			editButton.setVerticalTextPosition(JButton.CENTER);
 			editButton.setHorizontalTextPosition(JButton.CENTER);
@@ -311,9 +331,14 @@ public class TicketingSystem extends JFrame{
 				if (e.getSource() == editButton) {
 					String studentNumber = JOptionPane.showInputDialog(null, "Enter student number:", "Edit Student", JOptionPane.PLAIN_MESSAGE);
 				}
+				if (e.getSource() == backButton) {
+					window.remove(listPanel);
+					window.add(mainPanel, BorderLayout.CENTER);
+					window.repaint();
+					window.pack();
+				}
 			}
 		}
-
 
 		public void paintComponent(Graphics g) {
 			super.paintComponent(g); //required
