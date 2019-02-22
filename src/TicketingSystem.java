@@ -5,18 +5,20 @@
  */
 
 //Graphics & GUI imports
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.JTextField;
 import javax.swing.border.Border;
 import javax.swing.table.AbstractTableModel;
-import javax.swing.BoxLayout;
 import java.awt.BorderLayout;
+import java.awt.GridLayout;
 import java.awt.FlowLayout;
-import javax.swing.JScrollPane;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Graphics;
@@ -42,9 +44,10 @@ import java.util.ArrayList;
 public class TicketingSystem extends JFrame{
 
 	//main class variables
-	static JFrame window;
+	private static JFrame window;
 	private JPanel mainPanel;
 	private JPanel listPanel;
+	private JPanel addPanel;
 	private ArrayList<Student> studentList = new ArrayList<Student>();
 
 	//main method
@@ -196,7 +199,7 @@ public class TicketingSystem extends JFrame{
 		//Set up the display panel
 		
 		mainPanel = new HomePagePanel();
-		listPanel = new StudentListPanel();
+		addPanel = new AddStudentPanel();
 		this.setLayout(new BorderLayout());
 		this.add(mainPanel, BorderLayout.CENTER);
 		this.setTitle(eventName);
@@ -215,10 +218,13 @@ public class TicketingSystem extends JFrame{
 	//---------------------------Home Page Display---------------------------
 	private class HomePagePanel extends JPanel {
 		ClickListener click = new ClickListener();
+		JButton addButton = new JButton("Add New Student");
 		JButton listButton = new JButton("View Student List");
 		//JButton editButton = new JButton("Edit Student");
 		HomePagePanel() {
+			this.add(addButton);
 			this.add(listButton);
+			addButton.addActionListener(click);
 			listButton.addActionListener(click);
 		}
 
@@ -234,7 +240,14 @@ public class TicketingSystem extends JFrame{
 			public void actionPerformed(ActionEvent e) {
 				if (e.getSource() == listButton) {
 					window.remove(mainPanel);
+					listPanel = new StudentListPanel();
 					window.add(listPanel, BorderLayout.CENTER);
+					window.repaint();
+					window.pack();
+				}
+				if (e.getSource() == addButton) {
+					window.remove(mainPanel);
+					window.add(addPanel, BorderLayout.CENTER);
 					window.repaint();
 					window.pack();
 				}
@@ -257,6 +270,50 @@ public class TicketingSystem extends JFrame{
 
 	//------------------------Add Student Display-------------------
 	private class AddStudentPanel extends JPanel {
+		ClickListener click = new ClickListener();
+		JLabel nameLabel = new JLabel("Name");
+		JLabel stuNumLabel = new JLabel("Student Number");
+		JLabel dietLabel = new JLabel("Dietary Restrictions");
+		JLabel friendsLabel = new JLabel("Friends");
+
+		JTextField nameField = new JTextField();
+		JTextField stuNumField = new JTextField();
+		JTextField dietField = new JTextField();
+		JTextField friendsField = new JTextField();
+
+		JButton cancelButton = new JButton("Cancel");
+		JButton addButton = new JButton("Add Student");
+
+		AddStudentPanel() {
+			this.setLayout(new GridLayout(5,2,10,10));
+			this.add(nameLabel);
+			this.add(nameField);
+			this.add(stuNumLabel);
+			this.add(stuNumField);
+			this.add(dietLabel);
+			this.add(dietField);
+			this.add(friendsLabel);
+			this.add(friendsField);
+			this.add(cancelButton);
+			this.add(addButton);
+			cancelButton.addActionListener(click);
+			addButton.addActionListener(click);
+		}
+
+		private class ClickListener implements ActionListener {
+			public void actionPerformed(ActionEvent e) {
+				if (e.getSource() == addButton) {
+					//Check to make sure everything is formatted
+					//Add to student array and then
+				}
+				if (e.getSource() == cancelButton) {
+					window.remove(addPanel);
+					window.add(mainPanel, BorderLayout.CENTER);
+					window.repaint();
+					window.pack();
+				}
+			}
+		}
 
 		public void paintComponent(Graphics g) {
 			super.paintComponent(g); //required
