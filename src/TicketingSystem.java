@@ -56,19 +56,27 @@ public class TicketingSystem extends JFrame{
 	}
 
 	//Gets a student when given student number OR name
-
-	private Student findStudent(String identifier) {
+	private ArrayList<Student> findStudent(String identifier) {
+		ArrayList<Student> possibleStudents = new ArrayList<Student>();
 		//If given a student number
 		if (isNumber(identifier)) {
 			for (Student student : studentList) {
-				if ((student.getStudentNumber()).equals(identifier)) return student;
+				//Assume only one student with student number
+				if ((student.getStudentNumber()).equals(identifier)) {
+					possibleStudents.add(student);
+					return possibleStudents;
+				}
 			}
 		}
 		//If given a student name
 		else {
 			for (Student student : studentList) {
-				if ((student.getName()).equals(identifier)) return student;
+				if ((student.getName()).equals(identifier)) {
+					possibleStudents.add(student);
+				}
 			}
+			//return list if there's at least one person
+			if (!(studentList.isEmpty())) return studentList;
 		}
 		//If student not found
 		return null;
@@ -349,10 +357,13 @@ public class TicketingSystem extends JFrame{
 					if (i != 0) friends += ", ";
 					//Find other friends names if available
 					String friendNumber = ((studentList.get(row)).getFriendStudentNumbers()).get(i);
-					Student friend = findStudent(friendNumber);
-					if (friend != null) {
-						friends += friend.getName() + " (" + friendNumber + ")";
-					} else {
+
+					try {
+						//Since there is only one student number associated with each student, get first in array
+						Student friend = (findStudent(friendNumber)).get(0);
+						if (friend != null) friends += friend.getName() + " (" + friendNumber + ")";
+					} catch(Exception e) {
+						//Friend number not currently registered in system, add friend number for now
 						friends += friendNumber;
 					}
 				}
