@@ -39,6 +39,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 //Utility
 import java.util.ArrayList;
+import java.util.Arrays;
 
 @SuppressWarnings("serial")
 public class TicketingSystem extends JFrame{
@@ -59,6 +60,10 @@ public class TicketingSystem extends JFrame{
 	private ArrayList<Student> findStudent(String identifier) {
 		ArrayList<Student> possibleStudents = new ArrayList<Student>();
 		//If given a student number
+		//check for blank student
+		if (identifier.equals("")) {
+			return null;
+		}
 		if (isNumber(identifier)) {
 			for (Student student : studentList) {
 				//Assume only one student with student number
@@ -255,6 +260,7 @@ public class TicketingSystem extends JFrame{
 				}
 				if (e.getSource() == addButton) {
 					window.remove(mainPanel);
+					addPanel = new AddStudentPanel();
 					window.add(addPanel, BorderLayout.CENTER);
 					window.repaint();
 					window.pack();
@@ -311,10 +317,32 @@ public class TicketingSystem extends JFrame{
 		private class ClickListener implements ActionListener {
 			public void actionPerformed(ActionEvent e) {
 				if (e.getSource() == addButton) {
-					//Check to make sure everything is formatted
-					//Add to student array and then
+					//Get all fields
+					String name = nameField.getText();
+					String studentNumber = stuNumField.getText();
+					ArrayList<String> diet = new ArrayList<String>();
+					String[] tempDiet =(dietField.getText()).split(",");
+					for (int i = 0; i < tempDiet.length; i++) {
+						diet.add(tempDiet[i].trim());
+					}
+					ArrayList<String> friends = new ArrayList<String>();
+					String[] tempFriends =(friendsField.getText()).split(",");
+					for (int i = 0; i < tempFriends.length; i++) {
+						friends.add(tempFriends[i].trim());
+					}
+					//TODO: verify input
+					//Add student to arraylist
+					Student newStudent = new Student(name, studentNumber, diet, friends);
+					studentList.add(newStudent);
+					//Close window
+					window.remove(addPanel);
+					window.add(mainPanel, BorderLayout.CENTER);
+					window.repaint();
+					window.pack();
+					//Reset fields
 				}
 				if (e.getSource() == cancelButton) {
+					//Close window
 					window.remove(addPanel);
 					window.add(mainPanel, BorderLayout.CENTER);
 					window.repaint();
