@@ -1,7 +1,6 @@
 /* February 11, 2019
- * Bill Liu
- * TicketSystem.java
- * main method for the Ticketing System Program
+ * Bill Liu and Victor Lin
+ * TicketingSystem.java
  */
 
 //Graphics & GUI imports
@@ -84,12 +83,12 @@ public class TicketingSystem extends JFrame{
 		//If given a student name
 		else {
 			for (Student student : studentList) {
-				if ((student.getName()).equals(identifier)) {
+				if (((student.getName().toLowerCase())).equals(identifier.toLowerCase())) {
 					possibleStudents.add(student);
 				}
 			}
 			//return list if there's at least one person
-			if (!(studentList.isEmpty())) return studentList;
+			if (!(possibleStudents.isEmpty())) return possibleStudents;
 		}
 		//If student not found
 		return null;
@@ -106,6 +105,7 @@ public class TicketingSystem extends JFrame{
 		}
 		return true;
 	}
+
 
 	//----------------------Initial System Constructor-------------------
 	private TicketingSystem() {
@@ -235,7 +235,6 @@ public class TicketingSystem extends JFrame{
 	}//end of constructor
 
 
-
 	//---------------------------Home Page Display---------------------------
 	private class HomePagePanel extends JPanel {
 		ClickListener click = new ClickListener();
@@ -277,17 +276,6 @@ public class TicketingSystem extends JFrame{
 		}
 
 	}
-
-	/*private JPanel createMainPanel() {
-		JPanel panel = new JPanel();
-		panel.setLayout(new BorderLayout());
-
-		JButton myButton = new JButton("My Button");
-		panel.add(myButton);
-
-		return panel;
-	}*/
-
 
 
 	//------------------------Add Student Display-------------------
@@ -366,6 +354,7 @@ public class TicketingSystem extends JFrame{
 		}
 	}
 
+
 	//------------------------View Current List Display-------------------
 	private class StudentListPanel extends JPanel {
 		ClickListener click = new ClickListener();
@@ -433,7 +422,28 @@ public class TicketingSystem extends JFrame{
 		private class ClickListener implements ActionListener {
 			public void actionPerformed(ActionEvent e) {
 				if (e.getSource() == editButton) {
-					String studentNumber = JOptionPane.showInputDialog(null, "Enter student number:", "Edit Student", JOptionPane.PLAIN_MESSAGE);
+					String searchStudent = JOptionPane.showInputDialog(null, "Enter student number or name:", "Edit Student", JOptionPane.PLAIN_MESSAGE);
+					ArrayList<Student> results = findStudent(searchStudent);
+					//If no student found
+					if (results == null) {
+						JOptionPane.showMessageDialog(null,"No student found with that student number or name");
+					}
+					else {
+						Student match;
+						//One student found
+						if (results.size() == 1) {
+								match = results.get(0);
+						}
+						//Multiple students found
+						else if (results.size() > 1) {
+							String[] numList = new String[results.size()];
+							for (int i = 0; i < results.size(); i++) {
+								numList[i] = (results.get(i)).getStudentNumber();
+							}
+							Object selectedStudent = JOptionPane.showInputDialog(null, ("Warning: Multiple students found with name, please select student number"), "Edit Student", JOptionPane.DEFAULT_OPTION, null, numList, "0");
+							match = (findStudent(selectedStudent.toString())).get(0);
+						}
+					}
 				}
 				if (e.getSource() == backButton) {
 					window.remove(listPanel);
@@ -450,7 +460,6 @@ public class TicketingSystem extends JFrame{
 			
 		}
 	}
-
 
 
 	/*//--------------------------Mouse Listener Class---------------------
