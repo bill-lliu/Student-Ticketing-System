@@ -42,6 +42,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 @SuppressWarnings("serial")
+
+/**
+ * TicketingSystem
+ * This class is the graphical interface for an event ticketing system.
+ *
+ * @author Bill Liu
+ * @author Victor Lin
+ */
 public class TicketingSystem extends JFrame{
 
 	//main class variables
@@ -100,7 +108,7 @@ public class TicketingSystem extends JFrame{
 	}
 
 	//----------------------Initial System Constructor-------------------
-	TicketingSystem() {
+	private TicketingSystem() {
 		super("Ticketing System");
 
 		//creates variables to write and draw
