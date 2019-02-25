@@ -61,6 +61,8 @@ public class TicketingSystem extends JFrame{
 		window = new TicketingSystem();
 	}
 
+	
+	//-------------functions for the class-----------------
 	//Gets a student when given student number OR name
 	private ArrayList<Student> findStudent(String identifier) {
 		ArrayList<Student> possibleStudents = new ArrayList<Student>();
@@ -92,6 +94,7 @@ public class TicketingSystem extends JFrame{
 		return null;
 	}
 
+	//checks if entity is a number
 	private boolean isNumber(String text) {
 		//Is a student number
 		try {
@@ -103,7 +106,13 @@ public class TicketingSystem extends JFrame{
 		}
 		return true;
 	}
-
+	
+	
+	private void saveFile(ArrayList<Student> listToSave) {
+		for (int i=0; i<listToSave.size(); i++) {
+			//save to csv file
+		}
+	}
 
 	//----------------------Initial System Constructor-------------------
 	private TicketingSystem() {
@@ -237,6 +246,7 @@ public class TicketingSystem extends JFrame{
 		ClickListener click = new ClickListener();
 		JButton addButton = new JButton("Add New Student");
 		JButton listButton = new JButton("View Student List");
+		JButton floorPlanButton = new JButton("Generate FloorPlan");
 		//JButton editButton = new JButton("Edit Student");
 		HomePagePanel() {
 			this.add(addButton);
@@ -265,6 +275,13 @@ public class TicketingSystem extends JFrame{
 				if (e.getSource() == addButton) {
 					window.remove(mainPanel);
 					addPanel = new AddStudentPanel();
+					window.add(addPanel, BorderLayout.CENTER);
+					window.repaint();
+					window.pack();
+				}
+				if (e.getSource() == floorPlanButton) {
+					window.remove(mainPanel);
+					addPanel = new FloorPlanPanel();
 					window.add(addPanel, BorderLayout.CENTER);
 					window.repaint();
 					window.pack();
@@ -615,6 +632,18 @@ public class TicketingSystem extends JFrame{
 	}
 
 
+	
+	//----------------Initiate Seating Algorithm and Display floorPlan-------------
+	private class FloorPlanPanel extends JPanel {
+		FloorPlanPanel() {
+			//do seating alg
+			//do floor plan
+		}
+	}
+
+	
+	
+	
 	/*//--------------------------Mouse Listener Class---------------------
 	private class MyMouseListener implements MouseListener {
 
