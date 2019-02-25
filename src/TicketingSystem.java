@@ -91,7 +91,6 @@ public class TicketingSystem extends JFrame{
 		String eventName;
 
 
-
 		//the program will try to find the event data which is saved as a text file
 		//if the file does not exist, it will generate a new file with this name
 
@@ -168,7 +167,7 @@ public class TicketingSystem extends JFrame{
 			System.out.println("no file of that name found... generating new file");
 			try {
 				//creates the writer for the file
-				FileWriter MyWriter = new FileWriter(eventName + ".csv");
+				FileWriter MyWriter = new FileWriter(eventName + ".csv");//creates the file
 				
 				/*StringBuilder MyBuilder = new StringBuilder();
 			      MyBuilder.append("Name,");
@@ -222,7 +221,16 @@ public class TicketingSystem extends JFrame{
 			//insert here stuff that would happen every frame
 
 		}
+		
+		private class ClickListener implements ActionListener {
+			public void actionPerformed(ActionEvent e) {
+				if (e.getSource() == editButton) {
+					String studentNumber = JOptionPane.showInputDialog(null, "Enter student number:", "Edit Student", JOptionPane.PLAIN_MESSAGE);
+				}
+			}
+		}
 	}
+	
 
 	/*private JPanel createMainPanel() {
 		JPanel panel = new JPanel();
@@ -310,6 +318,9 @@ public class TicketingSystem extends JFrame{
 			public void actionPerformed(ActionEvent e) {
 				if (e.getSource() == editButton) {
 					String studentNumber = JOptionPane.showInputDialog(null, "Enter student number:", "Edit Student", JOptionPane.PLAIN_MESSAGE);
+				} else if (e.getSource() == backButton) {
+					//StudentListPanel.setEnabled(false);
+					//should close jpanel for student then reopen home panel
 				}
 			}
 		}
