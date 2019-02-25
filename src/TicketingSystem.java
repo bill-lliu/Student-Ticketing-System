@@ -1,22 +1,22 @@
 /* February 11, 2019
- * Bill Liu
- * TicketSystem.java
- * main method for the Ticketing System Program
+ * Bill Liu and Victor Lin
+ * TicketingSystem.java
  */
 
 //Graphics & GUI imports
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JTable;
-import javax.swing.border.Border;
-import javax.swing.table.AbstractTableModel;
-import javax.swing.BoxLayout;
-import java.awt.BorderLayout;
-import java.awt.FlowLayout;
 import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.SwingConstants;
+import java.awt.BorderLayout;
+import java.awt.GridLayout;
+import java.awt.FlowLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Graphics;
@@ -39,13 +39,22 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 
 @SuppressWarnings("serial")
+
+/**
+ * TicketingSystem
+ * This class is the graphical interface for an event ticketing system.
+ *
+ * @author Bill Liu
+ * @author Victor Lin
+ */
 public class TicketingSystem extends JFrame{
 
 	//main class variables
-	static JFrame window;
-	JPanel mainPanel;
-	JPanel listPanel;
-	ArrayList<Student> studentList = new ArrayList<Student>();
+	private static JFrame window;
+	private JPanel mainPanel;
+	private JPanel listPanel;
+	private JPanel addPanel;
+	private ArrayList<Student> studentList = new ArrayList<Student>();
 
 	//main method
 	public static void main(String[] args) {
@@ -53,19 +62,31 @@ public class TicketingSystem extends JFrame{
 	}
 
 	//Gets a student when given student number OR name
-
-	private Student findStudent(String identifier) {
+	private ArrayList<Student> findStudent(String identifier) {
+		ArrayList<Student> possibleStudents = new ArrayList<Student>();
 		//If given a student number
+		//check for blank student
+		if (identifier.equals("")) {
+			return null;
+		}
 		if (isNumber(identifier)) {
 			for (Student student : studentList) {
-				if ((student.getStudentNumber()).equals(identifier)) return student;
+				//Assume only one student with student number
+				if ((student.getStudentNumber()).equals(identifier)) {
+					possibleStudents.add(student);
+					return possibleStudents;
+				}
 			}
 		}
 		//If given a student name
 		else {
 			for (Student student : studentList) {
-				if ((student.getName()).equals(identifier)) return student;
+				if (((student.getName().toLowerCase())).equals(identifier.toLowerCase())) {
+					possibleStudents.add(student);
+				}
 			}
+			//return list if there's at least one person
+			if (!(possibleStudents.isEmpty())) return possibleStudents;
 		}
 		//If student not found
 		return null;
@@ -83,8 +104,9 @@ public class TicketingSystem extends JFrame{
 		return true;
 	}
 
+
 	//----------------------Initial System Constructor-------------------
-	TicketingSystem() {
+	private TicketingSystem() {
 		super("Ticketing System");
 
 		//creates variables to write and draw
@@ -168,7 +190,7 @@ public class TicketingSystem extends JFrame{
 			try {
 				//creates the writer for the file
 				FileWriter MyWriter = new FileWriter(eventName + ".csv");//creates the file
-				
+
 				/*StringBuilder MyBuilder = new StringBuilder();
 			      MyBuilder.append("Name,");
 			      MyBuilder.append("Student Number,");
@@ -177,7 +199,7 @@ public class TicketingSystem extends JFrame{
 			      MyBuilder.append('\n');
 
 			      MyWriter.write(MyBuilder.toString());*/ //no longer necessary;
-				
+
 				MyWriter.close();
 			} catch (IOException e) {
 				System.out.println("error while writing file");
@@ -193,12 +215,11 @@ public class TicketingSystem extends JFrame{
 		//frame.setResizable(false);
 
 		//Set up the display panel
-		
-		mainPanel = new AddStudentPanel();
-		listPanel = new StudentListPanel();
+
+		mainPanel = new HomePagePanel();
+		addPanel = new AddStudentPanel();
 		this.setLayout(new BorderLayout());
-		this.add(new AddStudentPanel());
-		this.add(new StudentListPanel(), BorderLayout.CENTER);
+		this.add(mainPanel, BorderLayout.CENTER);
 		this.setTitle(eventName);
 		this.pack();
 		this.setVisible(true);
@@ -211,9 +232,19 @@ public class TicketingSystem extends JFrame{
 	}//end of constructor
 
 
-
 	//---------------------------Home Page Display---------------------------
 	private class HomePagePanel extends JPanel {
+		ClickListener click = new ClickListener();
+		JButton addButton = new JButton("Add New Student");
+		JButton listButton = new JButton("View Student List");
+		//JButton editButton = new JButton("Edit Student");
+		HomePagePanel() {
+			this.add(addButton);
+			this.add(listButton);
+			addButton.addActionListener(click);
+			listButton.addActionListener(click);
+		}
+
 		public void paintComponent(Graphics g) {
 			super.paintComponent(g); //required
 			setDoubleBuffered(true);
@@ -221,31 +252,247 @@ public class TicketingSystem extends JFrame{
 			//insert here stuff that would happen every frame
 
 		}
-		
+
 		private class ClickListener implements ActionListener {
 			public void actionPerformed(ActionEvent e) {
-				if (e.getSource() == editButton) {
-					String studentNumber = JOptionPane.showInputDialog(null, "Enter student number:", "Edit Student", JOptionPane.PLAIN_MESSAGE);
+				if (e.getSource() == listButton) {
+					window.remove(mainPanel);
+					listPanel = new StudentListPanel();
+					window.add(listPanel, BorderLayout.CENTER);
+					window.repaint();
+					window.pack();
+				}
+				if (e.getSource() == addButton) {
+					window.remove(mainPanel);
+					addPanel = new AddStudentPanel();
+					window.add(addPanel, BorderLayout.CENTER);
+					window.repaint();
+					window.pack();
 				}
 			}
 		}
+
 	}
-	
-
-	/*private JPanel createMainPanel() {
-		JPanel panel = new JPanel();
-		panel.setLayout(new BorderLayout());
-
-		JButton myButton = new JButton("My Button");
-		panel.add(myButton);
-
-		return panel;
-	}*/
 
 
 
 	//------------------------Add Student Display-------------------
 	private class AddStudentPanel extends JPanel {
+		//read class at your own risk
+		//will cause decrease in brain cells
+		Student editStudent = null;
+		boolean editing = false;
+
+		//ClickListener
+		ClickListener click = new ClickListener();
+
+		//Labels
+		JLabel nameLabel = new JLabel("Name *");
+		JLabel stuNumLabel = new JLabel("Student Number *");
+		JLabel dietLabel = new JLabel("<html>Dietary Restrictions<br/>(Separated with commas)</html>");
+		JLabel friendsLabel = new JLabel("<html>Friends<br/>(Separated with commas)</html>");
+		JLabel blankLabel = new JLabel("");
+		JLabel requiredLabel = new JLabel("* Required", SwingConstants.CENTER);
+
+		//Fields
+		JTextField nameField = new JTextField();
+		JTextField stuNumField = new JTextField();
+		JTextField dietField = new JTextField();
+		JTextField friendsField = new JTextField();
+
+		//Buttons
+		JButton cancelButton = new JButton("Cancel");
+		JButton addButton = new JButton("Add Student");
+		JButton deleteButton = new JButton("Delete Student");
+
+		//Create a new student
+		AddStudentPanel() {
+			this.setLayout(new GridLayout(6,2,10,10));
+			//Add to panel
+			this.add(nameLabel);
+			this.add(nameField);
+			this.add(stuNumLabel);
+			this.add(stuNumField);
+			this.add(dietLabel);
+			this.add(dietField);
+			this.add(friendsLabel);
+			this.add(friendsField);
+			this.add(blankLabel);
+			this.add(requiredLabel);
+			this.add(cancelButton);
+			this.add(addButton);
+
+			//Add ActionListeners
+			cancelButton.addActionListener(click);
+			addButton.addActionListener(click);
+		}
+
+		//Edit an existing student
+		AddStudentPanel(Student student) {
+			editStudent = student;
+			editing = true;
+			this.setLayout(new GridLayout(6,2,10,10));
+			//Edit addButton
+			addButton = new JButton("Save Student");
+			//Fill panels
+			nameField.setText(student.getName());
+			stuNumField.setText(student.getStudentNumber());
+			String tempDiet = "";
+			for (int i = 0; i < (student.getDietaryRestrictions()).size(); i++) {
+				if (i != 0) tempDiet += ", ";
+				tempDiet += (student.getDietaryRestrictions()).get(i);
+			}
+			dietField.setText(tempDiet);
+			String tempFriends = "";
+			for (int i = 0; i < (student.getFriendStudentNumbers()).size(); i++) {
+				if (i != 0) tempFriends += ", ";
+				tempFriends += (student.getFriendStudentNumbers()).get(i);
+			}
+			friendsField.setText(tempFriends);
+			//Add to panel
+			this.add(nameLabel);
+			this.add(nameField);
+			this.add(stuNumLabel);
+			this.add(stuNumField);
+			this.add(dietLabel);
+			this.add(dietField);
+			this.add(friendsLabel);
+			this.add(friendsField);
+			this.add(deleteButton);
+			this.add(requiredLabel);
+			this.add(cancelButton);
+			this.add(addButton);
+
+			//Add ActionListeners
+			deleteButton.addActionListener(click);
+			cancelButton.addActionListener(click);
+			addButton.addActionListener(click);
+		}
+
+		private class ClickListener implements ActionListener {
+			public void actionPerformed(ActionEvent e) {
+				if (e.getSource() == addButton) {
+					//Begin by assuming input is valid
+					boolean valid = true;
+					//Get all fields
+					String name = nameField.getText().trim();
+					String studentNumber = stuNumField.getText().trim();
+					ArrayList<String> diet = new ArrayList<String>();
+					String[] tempDiet = (dietField.getText()).split(",");
+					for (int i = 0; i < tempDiet.length; i++) {
+						diet.add(tempDiet[i].trim());
+					}
+					ArrayList<String> friends = new ArrayList<String>();
+					String[] tempFriends = (friendsField.getText()).split(",");
+					for (int i = 0; i < tempFriends.length; i++) {
+						if (!tempFriends[i].equals("")) {
+							friends.add(tempFriends[i].trim());
+						}
+					}
+					//Check for empty name
+					if (name.equals("")) {
+						valid = false;
+						JOptionPane.showMessageDialog(null, "Name field required");
+					}
+					//Check for empty student number
+					if (studentNumber.equals("")) {
+						valid = false;
+						JOptionPane.showMessageDialog(null,"Student number required");
+					}
+					//Check if student number is a number
+					else if (!isNumber(studentNumber)) {
+						valid = false;
+						JOptionPane.showMessageDialog(null,"Student number can only consist of numbers");
+					}
+					//Check if student number already exists
+					else if (findStudent(studentNumber) != null) {
+						//If not editing a student
+						if (editStudent == null) {
+							valid = false;
+							JOptionPane.showMessageDialog(null, "Student number already in use by another student");
+						}
+						//If student being edited has changed student number
+						else if (!((editStudent.getStudentNumber()).equals(studentNumber))) {
+							valid = false;
+							JOptionPane.showMessageDialog(null, "Student number already in use by another student");
+						}
+					}
+					//Check if friends exist in the system
+					String invalidStudents = "";
+					if (friends.size() > 0) {
+						for (int i = 0; i < friends.size(); i++) {
+							//Only check for names
+							String currentTest = friends.get(i);
+							if (!isNumber(currentTest)) {
+								if ((findStudent(friends.get(i))) == null) {
+									valid = false;
+									invalidStudents += (friends.get(i) + "\n");
+								}
+							}
+							if (!invalidStudents.equals("")) {
+								JOptionPane.showMessageDialog(null, ("The following students are not in the database:\n") + invalidStudents + "Please replace student names with student numbers and try again.");
+							}
+						}
+					}
+					if (valid) {
+						//Double check for students with same names and convert names to student numbers
+						for (int i = 0; i < friends.size(); i++) {
+							ArrayList<Student> results = findStudent(friends.get(i));
+							if (results == null) {
+								//no students found
+							}
+							//One student found
+							else if (results.size() == 1) {
+								friends.set(i, results.get(0).getStudentNumber());
+							}
+							//Multiple students found
+							else if (results.size() > 1) {
+								String[] numList = new String[results.size()];
+								for (int j = 0; j < results.size(); j++) {
+									numList[j] = (results.get(j)).getStudentNumber();
+								}
+								Object selectedStudent = JOptionPane.showInputDialog(null, ("Warning: Multiple students found with name " + friends.get(i) + ", please select student number"), "Select Student", JOptionPane.DEFAULT_OPTION, null, numList, "0");
+								friends.set(i, selectedStudent.toString());
+							}
+						}
+						//Add student to arraylist
+						Student newStudent = new Student(name, studentNumber, diet, friends);
+						if (editing) {
+							int index = studentList.indexOf(editStudent);
+							studentList.set(index, newStudent);
+						}
+						else {
+							studentList.add(newStudent);
+						}
+						//Close window
+						window.remove(addPanel);
+						window.add(mainPanel, BorderLayout.CENTER);
+						window.repaint();
+						window.pack();
+						//Reset fields
+					}
+				}
+				if (e.getSource() == deleteButton) {
+					//Confirm deletion
+					int reply = JOptionPane.showConfirmDialog(null, "Warning: this action cannot be undone. Are you sure you want to delete this student?", "Confirm Deletion", JOptionPane.YES_NO_OPTION);
+					if (reply == JOptionPane.YES_OPTION) {
+						studentList.remove(editStudent);
+						//Close window
+						window.remove(addPanel);
+						window.add(mainPanel, BorderLayout.CENTER);
+						window.repaint();
+						window.pack();
+					}
+				}
+				if (e.getSource() == cancelButton) {
+					//Close window
+					window.remove(addPanel);
+					window.add(mainPanel, BorderLayout.CENTER);
+					window.repaint();
+					window.pack();
+				}
+			}
+		}
 
 		public void paintComponent(Graphics g) {
 			super.paintComponent(g); //required
@@ -253,6 +500,7 @@ public class TicketingSystem extends JFrame{
 
 		}
 	}
+
 
 	//------------------------View Current List Display-------------------
 	private class StudentListPanel extends JPanel {
@@ -281,10 +529,13 @@ public class TicketingSystem extends JFrame{
 					if (i != 0) friends += ", ";
 					//Find other friends names if available
 					String friendNumber = ((studentList.get(row)).getFriendStudentNumbers()).get(i);
-					Student friend = findStudent(friendNumber);
-					if (friend != null) {
-						friends += friend.getName() + " (" + friendNumber + ")";
-					} else {
+
+					try {
+						//Since there is only one student number associated with each student, get first in array
+						Student friend = (findStudent(friendNumber)).get(0);
+						if (friend != null) friends += friend.getName() + " (" + friendNumber + ")";
+					} catch(Exception e) {
+						//Friend number not currently registered in system, add friend number for now
 						friends += friendNumber;
 					}
 				}
@@ -302,6 +553,7 @@ public class TicketingSystem extends JFrame{
 
 			backButton.setVerticalTextPosition(JButton.CENTER);
 			backButton.setHorizontalTextPosition(JButton.CENTER);
+			backButton.addActionListener(click);
 
 			editButton.setVerticalTextPosition(JButton.CENTER);
 			editButton.setHorizontalTextPosition(JButton.CENTER);
@@ -315,24 +567,52 @@ public class TicketingSystem extends JFrame{
 		}
 
 		private class ClickListener implements ActionListener {
-			public void actionPerformed(ActionEvent e) {
+			public void actionPerformed(ActionEvent e) throws NullPointerException {
 				if (e.getSource() == editButton) {
-					String studentNumber = JOptionPane.showInputDialog(null, "Enter student number:", "Edit Student", JOptionPane.PLAIN_MESSAGE);
-				} else if (e.getSource() == backButton) {
-					//StudentListPanel.setEnabled(false);
-					//should close jpanel for student then reopen home panel
+					//Get student to edit
+					String searchStudent = JOptionPane.showInputDialog(null, "Enter student number or name:", "Edit Student", JOptionPane.PLAIN_MESSAGE);
+					ArrayList<Student> results = findStudent(searchStudent);
+					//If no student found
+					if (results == null) {
+						JOptionPane.showMessageDialog(null,"No student found with that student number or name");
+					}
+					else {
+						Student match = null;
+						//One student found
+						if (results.size() == 1) {
+								match = results.get(0);
+						}
+						//Multiple students found
+						else if (results.size() > 1) {
+							String[] numList = new String[results.size()];
+							for (int i = 0; i < results.size(); i++) {
+								numList[i] = (results.get(i)).getStudentNumber();
+							}
+							Object selectedStudent = JOptionPane.showInputDialog(null, ("Warning: Multiple students found with name " + searchStudent + ", please select student number"), "Select Student", JOptionPane.DEFAULT_OPTION, null, numList, "0");
+							match = (findStudent(selectedStudent.toString())).get(0);
+						}
+						window.remove(listPanel);
+						addPanel = new AddStudentPanel(match);
+						window.add(addPanel);
+						window.repaint();
+						window.pack();
+					}
+				}
+				if (e.getSource() == backButton) {
+					window.remove(listPanel);
+					window.add(mainPanel, BorderLayout.CENTER);
+					window.repaint();
+					window.pack();
 				}
 			}
 		}
 
-
 		public void paintComponent(Graphics g) {
 			super.paintComponent(g); //required
 			setDoubleBuffered(true);
-			
+
 		}
 	}
-
 
 
 	/*//--------------------------Mouse Listener Class---------------------
