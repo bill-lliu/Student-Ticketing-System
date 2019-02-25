@@ -282,6 +282,8 @@ public class TicketingSystem extends JFrame{
 	private class AddStudentPanel extends JPanel {
 		//read class at your own risk
 		//will cause decrease in brain cells
+		Student editStudent = null;
+		boolean editing = false;
 
 		//ClickListener
 		ClickListener click = new ClickListener();
@@ -329,7 +331,26 @@ public class TicketingSystem extends JFrame{
 
 		//Edit an existing student
 		AddStudentPanel(Student student) {
+			editStudent = student;
+			editing = true;
 			this.setLayout(new GridLayout(6,2,10,10));
+			//Edit addButton
+			addButton = new JButton("Save Student");
+			//Fill panels
+			nameField.setText(student.getName());
+			stuNumField.setText(student.getStudentNumber());
+			String tempDiet = "";
+			for (int i = 0; i < (student.getDietaryRestrictions()).size(); i++) {
+				if (i != 0) tempDiet += ", ";
+				tempDiet += (student.getDietaryRestrictions()).get(i);
+			}
+			dietField.setText(tempDiet);
+			String tempFriends = "";
+			for (int i = 0; i < (student.getFriendStudentNumbers()).size(); i++) {
+				if (i != 0) tempFriends += ", ";
+				tempFriends += (student.getFriendStudentNumbers()).get(i);
+			}
+			friendsField.setText(tempFriends);
 			//Add to panel
 			this.add(nameLabel);
 			this.add(nameField);
@@ -387,8 +408,16 @@ public class TicketingSystem extends JFrame{
 					}
 					//Check if student number already exists
 					else if (findStudent(studentNumber) != null) {
-						valid = false;
-						JOptionPane.showMessageDialog(null,"Student number already in use by another student");
+						//If not editing a student
+						if (editStudent == null) {
+							valid = false;
+							JOptionPane.showMessageDialog(null, "Student number already in use by another student");
+						}
+						//If student being edited has changed student number
+						else if (!((editStudent.getStudentNumber()).equals(studentNumber))) {
+							valid = false;
+							JOptionPane.showMessageDialog(null, "Student number already in use by another student");
+						}
 					}
 					//Check if friends exist in the system
 					String invalidStudents = "";
@@ -411,8 +440,11 @@ public class TicketingSystem extends JFrame{
 						//Double check for students with same names and convert names to student numbers
 						for (int i = 0; i < friends.size(); i++) {
 							ArrayList<Student> results = findStudent(friends.get(i));
+							if (results == null) {
+								//no students found
+							}
 							//One student found
-							if (results.size() == 1) {
+							else if (results.size() == 1) {
 								friends.set(i, results.get(0).getStudentNumber());
 							}
 							//Multiple students found
@@ -427,7 +459,13 @@ public class TicketingSystem extends JFrame{
 						}
 						//Add student to arraylist
 						Student newStudent = new Student(name, studentNumber, diet, friends);
-						studentList.add(newStudent);
+						if (editing) {
+							int index = studentList.indexOf(editStudent);
+							studentList.set(index, newStudent);
+						}
+						else {
+							studentList.add(newStudent);
+						}
 						//Close window
 						window.remove(addPanel);
 						window.add(mainPanel, BorderLayout.CENTER);
@@ -521,6 +559,7 @@ public class TicketingSystem extends JFrame{
 		private class ClickListener implements ActionListener {
 			public void actionPerformed(ActionEvent e) throws NullPointerException {
 				if (e.getSource() == editButton) {
+					//Get student to edit
 					String searchStudent = JOptionPane.showInputDialog(null, "Enter student number or name:", "Edit Student", JOptionPane.PLAIN_MESSAGE);
 					ArrayList<Student> results = findStudent(searchStudent);
 					//If no student found
