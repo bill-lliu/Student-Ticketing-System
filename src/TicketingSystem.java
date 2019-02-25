@@ -283,8 +283,8 @@ public class TicketingSystem extends JFrame{
 		ClickListener click = new ClickListener();
 		JLabel nameLabel = new JLabel("Name");
 		JLabel stuNumLabel = new JLabel("Student Number");
-		JLabel dietLabel = new JLabel("Dietary Restrictions");
-		JLabel friendsLabel = new JLabel("Friends");
+		JLabel dietLabel = new JLabel("<html>Dietary Restrictions<br/>(Separated with commas)</html>");
+		JLabel friendsLabel = new JLabel("<html>Friends<br/>(Separated with commas)</html>");
 
 		JTextField nameField = new JTextField();
 		JTextField stuNumField = new JTextField();
@@ -313,29 +313,88 @@ public class TicketingSystem extends JFrame{
 		private class ClickListener implements ActionListener {
 			public void actionPerformed(ActionEvent e) {
 				if (e.getSource() == addButton) {
+					//Begin by assuming input is valid
+					boolean valid = true;
 					//Get all fields
-					String name = nameField.getText();
-					String studentNumber = stuNumField.getText();
+					String name = nameField.getText().trim();
+					String studentNumber = stuNumField.getText().trim();
 					ArrayList<String> diet = new ArrayList<String>();
-					String[] tempDiet =(dietField.getText()).split(",");
+					String[] tempDiet = (dietField.getText()).split(",");
 					for (int i = 0; i < tempDiet.length; i++) {
 						diet.add(tempDiet[i].trim());
 					}
 					ArrayList<String> friends = new ArrayList<String>();
-					String[] tempFriends =(friendsField.getText()).split(",");
+					String[] tempFriends = (friendsField.getText()).split(",");
 					for (int i = 0; i < tempFriends.length; i++) {
-						friends.add(tempFriends[i].trim());
+						if (!tempFriends[i].equals("")) {
+							friends.add(tempFriends[i].trim());
+						}
 					}
-					//TODO: verify input
-					//Add student to arraylist
-					Student newStudent = new Student(name, studentNumber, diet, friends);
-					studentList.add(newStudent);
-					//Close window
-					window.remove(addPanel);
-					window.add(mainPanel, BorderLayout.CENTER);
-					window.repaint();
-					window.pack();
-					//Reset fields
+					//Check for empty name
+					if (name.equals("")) {
+						valid = false;
+						JOptionPane.showMessageDialog(null, "Name field required");
+					}
+					//Check for empty student number
+					if (studentNumber.equals("")) {
+						valid = false;
+						JOptionPane.showMessageDialog(null,"Student number required");
+					}
+					//Check if student number is a number
+					else if (!isNumber(studentNumber)) {
+						valid = false;
+						JOptionPane.showMessageDialog(null,"Student number can only consist of numbers");
+					}
+					//Check if student number already exists
+					else if (findStudent(studentNumber) != null) {
+						valid = false;
+						JOptionPane.showMessageDialog(null,"Student number already in use by another student");
+					}
+					//Check if friends exist in the system
+					String invalidStudents = "";
+					if (friends.size() > 0) {
+						for (int i = 0; i < friends.size(); i++) {
+							//Only check for names
+							String currentTest = friends.get(i);
+							if (!isNumber(currentTest)) {
+								if ((findStudent(friends.get(i))) == null) {
+									valid = false;
+									invalidStudents += (friends.get(i) + "\n");
+								}
+							}
+							if (!invalidStudents.equals("")) {
+								JOptionPane.showMessageDialog(null, ("The following students are not in the database:\n") + invalidStudents + "Please replace student names with student numbers and try again.");
+							}
+						}
+					}
+					if (valid) {
+						//Double check for students with same names
+						for (int i = 0; i < friends.size(); i++) {
+							ArrayList<Student> results = findStudent(friends.get(i));
+							//One student found
+							if (results.size() == 1) {
+								friends.set(i, results.get(0).getStudentNumber());
+							}
+							//Multiple students found
+							else if (results.size() > 1) {
+								String[] numList = new String[results.size()];
+								for (int j = 0; j < results.size(); j++) {
+									numList[j] = (results.get(j)).getStudentNumber();
+								}
+								Object selectedStudent = JOptionPane.showInputDialog(null, ("Warning: Multiple students found with name " + friends.get(i) + ", please select student number"), "Select Student", JOptionPane.DEFAULT_OPTION, null, numList, "0");
+								friends.set(i, selectedStudent.toString());
+							}
+						}
+						//Add student to arraylist
+						Student newStudent = new Student(name, studentNumber, diet, friends);
+						studentList.add(newStudent);
+						//Close window
+						window.remove(addPanel);
+						window.add(mainPanel, BorderLayout.CENTER);
+						window.repaint();
+						window.pack();
+						//Reset fields
+					}
 				}
 				if (e.getSource() == cancelButton) {
 					//Close window
