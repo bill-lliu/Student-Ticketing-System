@@ -13,8 +13,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
-import javax.swing.border.Border;
-import javax.swing.table.AbstractTableModel;
+import javax.swing.SwingConstants;
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.awt.FlowLayout;
@@ -38,7 +37,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 //Utility
 import java.util.ArrayList;
-import java.util.Arrays;
 
 @SuppressWarnings("serial")
 
@@ -289,12 +287,12 @@ public class TicketingSystem extends JFrame{
 		ClickListener click = new ClickListener();
 
 		//Labels
-		JLabel nameLabel = new JLabel("Name");
-		JLabel stuNumLabel = new JLabel("Student Number");
+		JLabel nameLabel = new JLabel("Name *");
+		JLabel stuNumLabel = new JLabel("Student Number *");
 		JLabel dietLabel = new JLabel("<html>Dietary Restrictions<br/>(Separated with commas)</html>");
 		JLabel friendsLabel = new JLabel("<html>Friends<br/>(Separated with commas)</html>");
 		JLabel blankLabel = new JLabel("");
-		JLabel requiredLabel = new JLabel("* Required");
+		JLabel requiredLabel = new JLabel("* Required", SwingConstants.CENTER);
 
 		//Fields
 		JTextField nameField = new JTextField();
@@ -472,6 +470,18 @@ public class TicketingSystem extends JFrame{
 						window.repaint();
 						window.pack();
 						//Reset fields
+					}
+				}
+				if (e.getSource() == deleteButton) {
+					//Confirm deletion
+					int reply = JOptionPane.showConfirmDialog(null, "Warning: this action cannot be undone. Are you sure you want to delete this student?", "Confirm Deletion", JOptionPane.YES_NO_OPTION);
+					if (reply == JOptionPane.YES_OPTION) {
+						studentList.remove(editStudent);
+						//Close window
+						window.remove(addPanel);
+						window.add(mainPanel, BorderLayout.CENTER);
+						window.repaint();
+						window.pack();
 					}
 				}
 				if (e.getSource() == cancelButton) {
