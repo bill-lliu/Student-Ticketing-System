@@ -280,22 +280,35 @@ public class TicketingSystem extends JFrame{
 
 	//------------------------Add Student Display-------------------
 	private class AddStudentPanel extends JPanel {
+		//read class at your own risk
+		//will cause decrease in brain cells
+
+		//ClickListener
 		ClickListener click = new ClickListener();
+
+		//Labels
 		JLabel nameLabel = new JLabel("Name");
 		JLabel stuNumLabel = new JLabel("Student Number");
 		JLabel dietLabel = new JLabel("<html>Dietary Restrictions<br/>(Separated with commas)</html>");
 		JLabel friendsLabel = new JLabel("<html>Friends<br/>(Separated with commas)</html>");
+		JLabel blankLabel = new JLabel("");
+		JLabel requiredLabel = new JLabel("* Required");
 
+		//Fields
 		JTextField nameField = new JTextField();
 		JTextField stuNumField = new JTextField();
 		JTextField dietField = new JTextField();
 		JTextField friendsField = new JTextField();
 
+		//Buttons
 		JButton cancelButton = new JButton("Cancel");
 		JButton addButton = new JButton("Add Student");
+		JButton deleteButton = new JButton("Delete Student");
 
+		//Create a new student
 		AddStudentPanel() {
-			this.setLayout(new GridLayout(5,2,10,10));
+			this.setLayout(new GridLayout(6,2,10,10));
+			//Add to panel
 			this.add(nameLabel);
 			this.add(nameField);
 			this.add(stuNumLabel);
@@ -304,8 +317,35 @@ public class TicketingSystem extends JFrame{
 			this.add(dietField);
 			this.add(friendsLabel);
 			this.add(friendsField);
+			this.add(blankLabel);
+			this.add(requiredLabel);
 			this.add(cancelButton);
 			this.add(addButton);
+
+			//Add ActionListeners
+			cancelButton.addActionListener(click);
+			addButton.addActionListener(click);
+		}
+
+		//Edit an existing student
+		AddStudentPanel(Student student) {
+			this.setLayout(new GridLayout(6,2,10,10));
+			//Add to panel
+			this.add(nameLabel);
+			this.add(nameField);
+			this.add(stuNumLabel);
+			this.add(stuNumField);
+			this.add(dietLabel);
+			this.add(dietField);
+			this.add(friendsLabel);
+			this.add(friendsField);
+			this.add(deleteButton);
+			this.add(requiredLabel);
+			this.add(cancelButton);
+			this.add(addButton);
+
+			//Add ActionListeners
+			deleteButton.addActionListener(click);
 			cancelButton.addActionListener(click);
 			addButton.addActionListener(click);
 		}
@@ -368,7 +408,7 @@ public class TicketingSystem extends JFrame{
 						}
 					}
 					if (valid) {
-						//Double check for students with same names
+						//Double check for students with same names and convert names to student numbers
 						for (int i = 0; i < friends.size(); i++) {
 							ArrayList<Student> results = findStudent(friends.get(i));
 							//One student found
@@ -479,7 +519,7 @@ public class TicketingSystem extends JFrame{
 		}
 
 		private class ClickListener implements ActionListener {
-			public void actionPerformed(ActionEvent e) {
+			public void actionPerformed(ActionEvent e) throws NullPointerException {
 				if (e.getSource() == editButton) {
 					String searchStudent = JOptionPane.showInputDialog(null, "Enter student number or name:", "Edit Student", JOptionPane.PLAIN_MESSAGE);
 					ArrayList<Student> results = findStudent(searchStudent);
@@ -488,7 +528,7 @@ public class TicketingSystem extends JFrame{
 						JOptionPane.showMessageDialog(null,"No student found with that student number or name");
 					}
 					else {
-						Student match;
+						Student match = null;
 						//One student found
 						if (results.size() == 1) {
 								match = results.get(0);
@@ -499,9 +539,14 @@ public class TicketingSystem extends JFrame{
 							for (int i = 0; i < results.size(); i++) {
 								numList[i] = (results.get(i)).getStudentNumber();
 							}
-							Object selectedStudent = JOptionPane.showInputDialog(null, ("Warning: Multiple students found with name, please select student number"), "Edit Student", JOptionPane.DEFAULT_OPTION, null, numList, "0");
+							Object selectedStudent = JOptionPane.showInputDialog(null, ("Warning: Multiple students found with name " + searchStudent + ", please select student number"), "Select Student", JOptionPane.DEFAULT_OPTION, null, numList, "0");
 							match = (findStudent(selectedStudent.toString())).get(0);
 						}
+						window.remove(listPanel);
+						addPanel = new AddStudentPanel(match);
+						window.add(addPanel);
+						window.repaint();
+						window.pack();
 					}
 				}
 				if (e.getSource() == backButton) {
