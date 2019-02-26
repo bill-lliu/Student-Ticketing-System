@@ -121,15 +121,15 @@ public class TicketingSystem extends JFrame{
 			BufferedWriter bw = new BufferedWriter(fw);
 			PrintWriter pw = new PrintWriter(bw);
 			//headers
-			pw.println("Name,Student Number, Dietary Restrictions, Friends"+'\n');
+			pw.print("Name, Student Number, Dietary Restrictions, Friends"+'\n');
 			//pw.flush();
 		    //adds each student
 			for (int i=0; i<studentList.size(); i++) {
-				pw.println(studentList.get(i).getName()+",");
-				pw.println(studentList.get(i).getStudentNumber()+",");
-				pw.println(studentList.get(i).getDietaryRestrictions()+",");
-				pw.println(studentList.get(i).getFriendStudentNumbers());
-				pw.println('\n');
+				pw.print(studentList.get(i).getName()+",");
+				pw.print(studentList.get(i).getStudentNumber()+",");
+				pw.print(studentList.get(i).getDietaryRestrictions()+",");
+				pw.print(studentList.get(i).getFriendStudentNumbers());
+				pw.print('\n');
 			    //pw.flush();
 			}
 			pw.flush();
@@ -310,7 +310,7 @@ public class TicketingSystem extends JFrame{
 					int seats = 0;
 					String input = null;
 					input = JOptionPane.showInputDialog(null, "Enter number of seats per table:");
-					if (input != null) {
+					/*if (input != null) {
 						try {
 							seats = Integer.parseInt(input);
 							if (seats > 0) {
@@ -330,7 +330,7 @@ public class TicketingSystem extends JFrame{
 						catch (Exception exc) {
 							JOptionPane.showMessageDialog(null, "Input must be a number");
 						}
-					}
+					}*/
 				} else if (e.getSource() == exitButton) {
 					saveFile();
 					window.dispatchEvent(new WindowEvent(window, WindowEvent.WINDOW_CLOSING));
