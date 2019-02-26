@@ -31,6 +31,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 //file input output
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -112,27 +113,31 @@ public class TicketingSystem extends JFrame{
 	
 	//function to save csv file
 	static void saveFile() {
+		//new information written to a temporary file
+		File oldFile = new File(eventName+".csv");
+		File newFile = new File("tmp.csv");
 		try {
-			FileWriter MyWriter = new FileWriter(eventName + ".csv", false);
-			StringBuilder MyBuilder = new StringBuilder();
+			FileWriter fw = new FileWriter("tmp.csv", true);
+			BufferedWriter bw = new BufferedWriter(fw);
+			PrintWriter pw = new PrintWriter(bw);
 			//headers
-			MyBuilder.append("Name,");
-			MyBuilder.append("Student Number,");
-			MyBuilder.append("Dietary Restrictions,");
-			MyBuilder.append("Friends");
-		    MyBuilder.append('\n');
-		    MyWriter.write(MyBuilder.toString());
+			pw.println("Name,Student Number, Dietary Restrictions, Friends"+'\n');
+			//pw.flush();
 		    //adds each student
 			for (int i=0; i<studentList.size(); i++) {
-				MyBuilder.append(studentList.get(i).getName()+",");
-				MyBuilder.append(studentList.get(i).getStudentNumber()+",");
-				MyBuilder.append(studentList.get(i).getDietaryRestrictions()+",");
-				MyBuilder.append(studentList.get(i).getFriendStudentNumbers());
-			    MyBuilder.append('\n');
-			    MyWriter.write(MyBuilder.toString());
+				pw.println(studentList.get(i).getName()+",");
+				pw.println(studentList.get(i).getStudentNumber()+",");
+				pw.println(studentList.get(i).getDietaryRestrictions()+",");
+				pw.println(studentList.get(i).getFriendStudentNumbers());
+				pw.println('\n');
+			    //pw.flush();
 			}
-			MyWriter.close();
+			pw.flush();
+			pw.close();
 			oldFile.delete();
+			File tmp = new File(eventName+".csv");
+			newFile.renameTo(tmp);
+			
 		} catch (IOException e) {
 	      System.out.println("error while saving");
 		}
