@@ -112,23 +112,29 @@ public class TicketingSystem extends JFrame{
 	
 	//function to save csv file
 	static void saveFile() {
-		for (int i=0; i<studentList.size(); i++) {
-			FileWriter MyWriter;
-			try {
-				MyWriter = new FileWriter(eventName + ".csv");
-				StringBuilder MyBuilder = new StringBuilder();
-				/*MyBuilder.append("Name,");
-			    MyBuilder.append("Student Number,");
-			    MyBuilder.append("Dietary Restrictions,");
-			    MyBuilder.append("Friends");
+		try {
+			FileWriter MyWriter = new FileWriter(eventName + ".csv", false);
+			StringBuilder MyBuilder = new StringBuilder();
+			//headers
+			MyBuilder.append("Name,");
+			MyBuilder.append("Student Number,");
+			MyBuilder.append("Dietary Restrictions,");
+			MyBuilder.append("Friends");
+		    MyBuilder.append('\n');
+		    MyWriter.write(MyBuilder.toString());
+		    //adds each student
+			for (int i=0; i<studentList.size(); i++) {
+				MyBuilder.append(studentList.get(i).getName()+",");
+				MyBuilder.append(studentList.get(i).getStudentNumber()+",");
+				MyBuilder.append(studentList.get(i).getDietaryRestrictions()+",");
+				MyBuilder.append(studentList.get(i).getFriendStudentNumbers());
 			    MyBuilder.append('\n');
-
-			    MyWriter.write(MyBuilder.toString());*/
-				MyWriter.close();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			    MyWriter.write(MyBuilder.toString());
 			}
+			MyWriter.close();
+			oldFile.delete();
+		} catch (IOException e) {
+	      System.out.println("error while saving");
 		}
 	}
 
@@ -240,22 +246,30 @@ public class TicketingSystem extends JFrame{
 	//---------------------------Home Page Display---------------------------
 	private class HomePagePanel extends JPanel {
 		ClickListener click = new ClickListener();
-		JLabel eventLabel = new JLabel("Welcome to " + eventName + "!");
-		JLabel greetingLabel = new JLabel("I would like to...");
-		JLabel blankLabel = new JLabel(" ");
+		JLabel greetingLabel = new JLabel("<html>Welcome to Seat Planner Pro!<br/>I would like to...</html>");
+		JLabel blankLabel1 = new JLabel(" ");
+		JLabel blankLabel2 = new JLabel(" ");
+		JLabel blankLabel3 = new JLabel(" ");
+		JLabel blankLabel4 = new JLabel(" ");
+		JLabel blankLabel5 = new JLabel(" ");
+		JLabel blankLabel6 = new JLabel(" ");
+		JLabel blankLabel7 = new JLabel(" ");
 		JButton exitButton = new JButton("Save & Exit");
 		JButton listButton = new JButton("View Student List");
 		JButton addButton = new JButton("Add New Student");
 		JButton floorPlanButton = new JButton("View Floor Plan");
 		//JButton editButton = new JButton("Edit Student");
 		HomePagePanel() {
-			this.setLayout(new GridLayout(3,3,10,10));
-			this.add(blankLabel);
-			this.add(eventLabel);
+			this.setLayout(new GridLayout(4,3,10,10));
+			this.add(blankLabel1);
+			this.add(blankLabel2);
 			this.add(exitButton);
-			this.add(blankLabel);
+			this.add(blankLabel3);
 			this.add(greetingLabel);
-			this.add(blankLabel);
+			this.add(blankLabel4);
+			this.add(blankLabel5);
+			this.add(blankLabel6);
+			this.add(blankLabel7);
 			this.add(listButton);
 			this.add(addButton);
 			this.add(floorPlanButton);
@@ -494,6 +508,8 @@ public class TicketingSystem extends JFrame{
 						else {
 							studentList.add(newStudent);
 						}
+						//saves the file automatically
+						saveFile();
 						//Close window
 						window.remove(addPanel);
 						window.add(mainPanel, BorderLayout.CENTER);
@@ -507,6 +523,8 @@ public class TicketingSystem extends JFrame{
 					int reply = JOptionPane.showConfirmDialog(null, "Warning: this action cannot be undone. Are you sure you want to delete this student?", "Confirm Deletion", JOptionPane.YES_NO_OPTION);
 					if (reply == JOptionPane.YES_OPTION) {
 						studentList.remove(editStudent);
+						//saves the file automatically
+						saveFile();
 						//Close window
 						window.remove(addPanel);
 						window.add(mainPanel, BorderLayout.CENTER);
