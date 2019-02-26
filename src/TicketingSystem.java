@@ -26,6 +26,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.WindowEvent;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 //file input output
@@ -54,7 +55,8 @@ public class TicketingSystem extends JFrame{
 	private JPanel mainPanel;
 	private JPanel listPanel;
 	private JPanel addPanel;
-	private ArrayList<Student> studentList = new ArrayList<Student>();
+	private static ArrayList<Student> studentList = new ArrayList<Student>();
+	private static String eventName;
 
 	//main method
 	public static void main(String[] args) {
@@ -108,19 +110,31 @@ public class TicketingSystem extends JFrame{
 	}
 	
 	
-	private void saveFile(ArrayList<Student> listToSave) {
-		for (int i=0; i<listToSave.size(); i++) {
-			//save to csv file
+	//function to save csv file
+	static void saveFile() {
+		for (int i=0; i<studentList.size(); i++) {
+			FileWriter MyWriter;
+			try {
+				MyWriter = new FileWriter(eventName + ".csv");
+				StringBuilder MyBuilder = new StringBuilder();
+				/*MyBuilder.append("Name,");
+			    MyBuilder.append("Student Number,");
+			    MyBuilder.append("Dietary Restrictions,");
+			    MyBuilder.append("Friends");
+			    MyBuilder.append('\n');
+
+			    MyWriter.write(MyBuilder.toString());*/
+				MyWriter.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 	}
 
 	//----------------------Initial System Constructor-------------------
 	private TicketingSystem() {
 		super("Ticketing System");
-
-		//creates variables to write and draw
-		String eventName;
-
 
 		//the program will try to find the event data which is saved as a text file
 		//if the file does not exist, it will generate a new file with this name
@@ -176,12 +190,7 @@ public class TicketingSystem extends JFrame{
 					//adds the student to the master student list
 					Student student = new Student(tmpStrings[0], tmpStrings[1], tmpDietResList, tmpStudentNumList);
 					studentList.add(student);
-
-   					/*System.out.println(studentList.get(0).getName() + ", "
-   							+ studentList.get(0).getStudentNumber() + ", "
-   							+ studentList.get(0).getDietaryRestrictions() + ", "
-   							+ studentList.get(0).getFriendStudentNumbers());*/
-
+					
 				}//end while loop for reading info
 
 
@@ -197,18 +206,8 @@ public class TicketingSystem extends JFrame{
 			//creating the event with the input event name
 			System.out.println("no file of that name found... generating new file");
 			try {
-				//creates the writer for the file
-				FileWriter MyWriter = new FileWriter(eventName + ".csv");//creates the file
-
-				/*StringBuilder MyBuilder = new StringBuilder();
-			      MyBuilder.append("Name,");
-			      MyBuilder.append("Student Number,");
-			      MyBuilder.append("Dietary Restrictions,");
-			      MyBuilder.append("Friends");
-			      MyBuilder.append('\n');
-
-			      MyWriter.write(MyBuilder.toString());*/ //no longer necessary;
-
+				//creates the writer for the file; creating the file
+				FileWriter MyWriter = new FileWriter(eventName + ".csv");
 				MyWriter.close();
 			} catch (IOException e) {
 				System.out.println("error while writing file");
@@ -216,7 +215,7 @@ public class TicketingSystem extends JFrame{
 
 		}
 
-		//********starts the panel***************
+		//***********starts the panel***************
 		// Set the frame to full screen
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setSize(Toolkit.getDefaultToolkit().getScreenSize());
@@ -234,9 +233,6 @@ public class TicketingSystem extends JFrame{
 		this.setVisible(true);
 		this.requestFocusInWindow(); //make sure the frame has focus
 
-		/*//initiates listener
-		MyMouseListener mouseListener = new MyMouseListener();
-		this.addMouseListener(mouseListener);*/ // no longer needed
 
 	}//end of constructor
 
@@ -244,15 +240,29 @@ public class TicketingSystem extends JFrame{
 	//---------------------------Home Page Display---------------------------
 	private class HomePagePanel extends JPanel {
 		ClickListener click = new ClickListener();
-		JButton addButton = new JButton("Add New Student");
+		JLabel eventLabel = new JLabel("Welcome to " + eventName + "!");
+		JLabel greetingLabel = new JLabel("I would like to...");
+		JLabel blankLabel = new JLabel(" ");
+		JButton exitButton = new JButton("Save & Exit");
 		JButton listButton = new JButton("View Student List");
-		JButton floorPlanButton = new JButton("Generate FloorPlan");
+		JButton addButton = new JButton("Add New Student");
+		JButton floorPlanButton = new JButton("View Floor Plan");
 		//JButton editButton = new JButton("Edit Student");
 		HomePagePanel() {
-			this.add(addButton);
+			this.setLayout(new GridLayout(3,3,10,10));
+			this.add(blankLabel);
+			this.add(eventLabel);
+			this.add(exitButton);
+			this.add(blankLabel);
+			this.add(greetingLabel);
+			this.add(blankLabel);
 			this.add(listButton);
-			addButton.addActionListener(click);
+			this.add(addButton);
+			this.add(floorPlanButton);
+			exitButton.addActionListener(click);
 			listButton.addActionListener(click);
+			addButton.addActionListener(click);
+			floorPlanButton.addActionListener(click);
 		}
 
 		public void paintComponent(Graphics g) {
@@ -271,20 +281,23 @@ public class TicketingSystem extends JFrame{
 					window.add(listPanel, BorderLayout.CENTER);
 					window.repaint();
 					window.pack();
-				}
-				if (e.getSource() == addButton) {
+				} else if (e.getSource() == addButton) {
 					window.remove(mainPanel);
 					addPanel = new AddStudentPanel();
 					window.add(addPanel, BorderLayout.CENTER);
 					window.repaint();
 					window.pack();
-				}
-				if (e.getSource() == floorPlanButton) {
+				} else if (e.getSource() == floorPlanButton) {
 					window.remove(mainPanel);
 					addPanel = new FloorPlanPanel();
 					window.add(addPanel, BorderLayout.CENTER);
 					window.repaint();
 					window.pack();
+				} else if (e.getSource() == exitButton) {
+					saveFile();
+					window.dispatchEvent(new WindowEvent(window, WindowEvent.WINDOW_CLOSING));
+					//nothing NEEDS to save; as everything already auto-saves after every edit
+					//this is simply to double check and save again
 				}
 			}
 		}
@@ -641,31 +654,6 @@ public class TicketingSystem extends JFrame{
 		}
 	}
 
-	
-	
-	
-	/*//--------------------------Mouse Listener Class---------------------
-	private class MyMouseListener implements MouseListener {
-
-		//write if statement for if mouse is clicked then do action where clicked
-
-		public void mouseClicked(MouseEvent e) {
-			// TODO Auto-generated method stub
-		}
-		public void mouseEntered(MouseEvent e) {
-			// TODO Auto-generated method stub
-		}
-		public void mouseExited(MouseEvent e) {
-			// TODO Auto-generated method stub
-		}
-		public void mousePressed(MouseEvent e) {
-			// TODO Auto-generated method stub
-		}
-		public void mouseReleased(MouseEvent e) {
-			// TODO Auto-generated method stub
-		}
-
-	}//end of mouse listener*/ // no longer needed
 
 
 }
