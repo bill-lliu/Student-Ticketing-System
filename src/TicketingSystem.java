@@ -288,11 +288,30 @@ public class TicketingSystem extends JFrame{
 					window.repaint();
 					window.pack();
 				} else if (e.getSource() == floorPlanButton) {
-					window.remove(mainPanel);
-					addPanel = new FloorPlanPanel();
-					window.add(addPanel, BorderLayout.CENTER);
-					window.repaint();
-					window.pack();
+					int seats = 0;
+					String input = null;
+					input = JOptionPane.showInputDialog(null, "Enter number of seats per table:");
+					if (input != null) {
+						try {
+							seats = Integer.parseInt(input);
+							if (seats > 0) {
+								//Use seating alg
+								SeatingAlg alg = new SeatingAlg();
+								ArrayList<Table> tables = alg.generateTables(studentList, seats);
+
+								//Display floor plan
+								FloorPlan plan = new FloorPlan();
+								plan.generateFloorPlan(tables);
+								plan.displayFloorPlan();
+							}
+							else {
+								JOptionPane.showMessageDialog(null, "Must be a number greater than 0");
+							}
+						}
+						catch (Exception exc) {
+							JOptionPane.showMessageDialog(null, "Input must be a number");
+						}
+					}
 				} else if (e.getSource() == exitButton) {
 					saveFile();
 					window.dispatchEvent(new WindowEvent(window, WindowEvent.WINDOW_CLOSING));
@@ -643,17 +662,4 @@ public class TicketingSystem extends JFrame{
 
 		}
 	}
-
-
-	
-	//----------------Initiate Seating Algorithm and Display floorPlan-------------
-	private class FloorPlanPanel extends JPanel {
-		FloorPlanPanel() {
-			//do seating alg
-			//do floor plan
-		}
-	}
-
-
-
 }
