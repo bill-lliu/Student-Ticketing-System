@@ -116,6 +116,7 @@ public class TicketingSystem extends JFrame{
 			FileWriter fw = new FileWriter("tmp.csv", true);
 			BufferedWriter bw = new BufferedWriter(fw);
 			PrintWriter pw = new PrintWriter(bw);
+			String cut = "";
 			//headers
 			pw.print("Name, Student Number, Dietary Restrictions, Friends"+'\n');
 			//pw.flush();
