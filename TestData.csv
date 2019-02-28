@@ -1,41 +1,41 @@
-Name,Student Number,Dietary Restrictions,Friends
-Alec Hurtt,16165372,Fish,"38808366, 29473957"
-Laurence Urrutia,98133437,Gluten,"12318863, 38293954"
-Elina Laflamme,87171477,Nuts,38359706
-Cameron Altschuler,26700591,,26700591
-Gavin Hundley,29476308,,29476308
-Cortez Burse,34686379,,75045022
-Eugenio Starnes,80756863,,"85397668, 38295730"
-Fernando Spindler,85720200,,96515463
-Remedios Iser,74820028,,51587128
-Modesto Alicea,40165762,,
-Zane Fleury,24341114,"Nuts, Fish",24341114
-Wilson Bedard,10866507,,
-Lanny Hohman,59000991,,67919805
-Shirlee Remington,10056783,,"49419218, 17850131, 80756863"
-Rick Filiault,96515463,Nuts,59000991
-Elaine Yerian,80984312,Vegan,"19385778, 67919805"
-Ramonita Eldridge,17850131,,51587128
-Merry Judah,49419218,Nuts,10866507
-Jefferson Carlberg,38359706,,"17850131, 49419218"
-Bret Pamplin,75045022,,73045329
-Mickey Caton,38808366,,"86663908, 29118435"
-Adele Frahm,85397668,,49833433
-Aide Lindo,12318863,,
-Louann Spade,67919805,,"73368080, 52719140"
-Krystyna Bhakta,49833433,Nuts,45333302
-Collin Byas,51587128,,"10056783, 38129654"
-Hector Nealon,73368080,,"73368080, 39483920"
-Christia Kamm,73045329,,72422723
-Rachell Schreier,72422723,Vegan,99870405
-Stepanie Amrhein,36174906,,34686379
-Reynalda Spiker,86663908,,"40165762, 19285743, 29118435"
-Veola Lunceford,99870405,Nuts,85720200
-Zelma Salido,56248722,,12318863
-Rey Biederman,45333302,,80984312
-Zack Latorre,76075180,,67919805
-Geoffrey Lubbers,34553836,,80756863
-Luanne Henke,26314873,"Vegan, Nuts",74820028
-Christiane Deshields,34572001,,36174906
-Corinne Burlingame,65474314,Meat,56248722
-Sherril Blomgren,76427466,,
+Name, Student Number, Dietary Restrictions, Friends
+Alec Hurtt,16165372,"Fish","38808366, 29473957"
+Laurence Urrutia,98133437,"Gluten","12318863, 38293954"
+Elina Laflamme,87171477,"Nuts","38359706"
+Cameron Altschuler,26700591,"","26700591"
+Gavin Hundley,29476308,"","29476308"
+Cortez Burse,34686379,"","75045022"
+Eugenio Starnes,80756863,"","85397668, 38295730"
+Fernando Spindler,85720200,"","96515463"
+Remedios Iser,74820028,"","51587128"
+Modesto Alicea,40165762,"",""
+Zane Fleury,24341114,"Nuts, Fish","24341114"
+Wilson Bedard,10866507,"",""
+Lanny Hohman,59000991,"","67919805"
+Shirlee Remington,10056783,"","49419218, 17850131, 80756863"
+Rick Filiault,96515463,"Nuts","59000991"
+Elaine Yerian,80984312,"Vegan","19385778, 67919805"
+Ramonita Eldridge,17850131,"","51587128"
+Merry Judah,49419218,"Nuts","10866507"
+Jefferson Carlberg,38359706,"","17850131, 49419218"
+Bret Pamplin,75045022,"","73045329"
+Mickey Caton,38808366,"","86663908, 29118435"
+Adele Frahm,85397668,"","49833433"
+Aide Lindo,12318863,"",""
+Louann Spade,67919805,"","73368080, 52719140"
+Krystyna Bhakta,49833433,"Nuts","45333302"
+Collin Byas,51587128,"","10056783, 38129654"
+Hector Nealon,73368080,"","73368080, 39483920"
+Christia Kamm,73045329,"","72422723"
+Rachell Schreier,72422723,"Vegan","99870405"
+Stepanie Amrhein,36174906,"","34686379"
+Reynalda Spiker,86663908,"","40165762, 19285743, 29118435"
+Veola Lunceford,99870405,"Nuts","85720200"
+Zelma Salido,56248722,"","12318863"
+Rey Biederman,45333302,"","80984312"
+Zack Latorre,76075180,"","67919805"
+Geoffrey Lubbers,34553836,"","80756863"
+Luanne Henke,26314873,"Vegan, Nuts","74820028"
+Christiane Deshields,34572001,"","36174906"
+Corinne Burlingame,65474314,"Meat","56248722"
+Sherril Blomgren,76427466,"",""

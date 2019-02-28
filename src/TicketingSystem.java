@@ -38,8 +38,6 @@ import java.io.PrintWriter;
 //Utility
 import java.util.ArrayList;
 
-@SuppressWarnings("serial")
-
 /**
  * TicketingSystem
  * This class is the graphical interface for an event ticketing system.
@@ -174,14 +172,15 @@ public class TicketingSystem extends JFrame{
 		super("Ticketing System");
 
 		//sets the font
-		setUIFont (new javax.swing.plaf.FontUIResource("Century Gothic",Font.PLAIN,20));
+		setUIFont (new javax.swing.plaf.FontUIResource("Century Gothic",Font.PLAIN,24));
 		
 		//the program will try to find the event data which is saved as a text file
 		//if the file does not exist, it will generate a new file with this name
 		
 		//asks the user for the name of the file
-		eventName = JOptionPane.showInputDialog(null, "What is the name of your event?" + "\n" + "(Enter a new name for a new event)", "RHHS Event Organizer", JOptionPane.PLAIN_MESSAGE);
-
+		UIManager.put("OptionPane.background", Color.CYAN);
+		eventName = JOptionPane.showInputDialog(null, "Welcome to BlueSeater!"+"\n"+"What is the name of your event?"+"\n"+"(Enter a new name for a new event)", "BlueSeater", JOptionPane.PLAIN_MESSAGE);
+        
 		//in case the user clicks out of the panel without entering anything
 		if (eventName == null) {
 			System.exit(0);
@@ -284,15 +283,15 @@ public class TicketingSystem extends JFrame{
 	private class HomePagePanel extends JPanel {
 		ClickListener click = new ClickListener();
 		//creates the parts of homepage
-		JLabel greetingLabel = new JLabel("<html>Welcome to Seat Planner Pro!<br/>I would like to...</html>");
-		JLabel blankLabel1 = new JLabel(" ");
+		JLabel creditLabel = new JLabel("Bill Liu/Victor Lin 2019");
 		JLabel blankLabel2 = new JLabel(" ");
-		JLabel blankLabel3 = new JLabel(" ");
+		JButton exitButton = new JButton("Save & Exit");
 		JLabel blankLabel4 = new JLabel(" ");
-		JLabel blankLabel5 = new JLabel(" ");
+		JLabel greetingLabel = new JLabel("Welcome to BlueSeater!");
 		JLabel blankLabel6 = new JLabel(" ");
 		JLabel blankLabel7 = new JLabel(" ");
-		JButton exitButton = new JButton("Save & Exit");
+		JLabel promptLabel = new JLabel("I would like to...");
+		JLabel blankLabel9 = new JLabel(" ");
 		JButton listButton = new JButton("View Student List");
 		JButton addButton = new JButton("Add New Student");
 		JButton floorPlanButton = new JButton("View Floor Plan");
@@ -300,15 +299,15 @@ public class TicketingSystem extends JFrame{
 		HomePagePanel() {
 			//adds parts in the right order
 			this.setLayout(new GridLayout(4,3,100,100));
-			this.add(blankLabel1);
+			this.add(creditLabel);
 			this.add(blankLabel2);
 			this.add(exitButton);
-			this.add(blankLabel3);
-			this.add(greetingLabel);
 			this.add(blankLabel4);
-			this.add(blankLabel5);
+			this.add(greetingLabel);
 			this.add(blankLabel6);
 			this.add(blankLabel7);
+			this.add(promptLabel);
+			this.add(blankLabel9);
 			this.add(listButton);
 			this.add(addButton);
 			this.add(floorPlanButton);
@@ -659,7 +658,8 @@ public class TicketingSystem extends JFrame{
 			//Create JTable
 			JPanel tablePanel = new JPanel(new BorderLayout());
 			JTable table = new JTable(data, columnNames);
-			table.setRowHeight(30);
+			table.setRowHeight(50);
+			table.setBackground(Color.CYAN);
 			table.setEnabled(false);
 			//Create JScrollPane
 			JScrollPane sp = new JScrollPane(table);
@@ -678,6 +678,7 @@ public class TicketingSystem extends JFrame{
 			buttonPanel.add(backButton);
 			buttonPanel.add(editButton);
 			this.add(tablePanel);
+			buttonPanel.setBackground(Color.BLUE);
 			this.add(buttonPanel);
 
 		}
