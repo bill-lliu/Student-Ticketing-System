@@ -498,6 +498,10 @@ public class TicketingSystem extends JFrame{
 						valid = false;
 						JOptionPane.showMessageDialog(null, "Name field required");
 					}
+					else if (!(name.matches("^[a-zA-Z ]*$"))) {
+						valid = false;
+						JOptionPane.showMessageDialog(null, "Name can only contain letters");
+					}
 					//Check for empty student number
 					if (studentNumber.equals("")) {
 						valid = false;
@@ -521,13 +525,25 @@ public class TicketingSystem extends JFrame{
 							JOptionPane.showMessageDialog(null, "Student number already in use by another student");
 						}
 					}
+					if (tempDiet.length > 0){
+						for (int i = 0; i < tempDiet.length; i++) {
+							if (!(tempDiet[i].matches("^[a-zA-Z ]*$"))) {
+								valid = false;
+								JOptionPane.showMessageDialog(null, "Dietary restrictions can only contain letters");
+							}
+						}
+					}
 					//Check if friends exist in the system
 					String invalidStudents = "";
 					if (friends.size() > 0) {
 						for (int i = 0; i < friends.size(); i++) {
 							//Only check for names
 							String currentTest = friends.get(i);
-							if (!isNumber(currentTest)) {
+							if (!(currentTest.matches("^[a-zA-Z0-9 ]*$"))) {
+								valid = false;
+								JOptionPane.showMessageDialog(null, "Student friends must be letters or numbers");
+							}
+							else if (!isNumber(currentTest)) {
 								if ((findStudent(friends.get(i))) == null) {
 									valid = false;
 									invalidStudents += (friends.get(i) + "\n");
