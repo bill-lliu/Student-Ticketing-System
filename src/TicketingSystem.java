@@ -348,7 +348,7 @@ public class TicketingSystem extends JFrame{
 					String input = null;
 					input = JOptionPane.showInputDialog(null, "Enter number of seats per table:");
 					if (input != null) {
-						/*try {
+						try {
 							seats = Integer.parseInt(input);
 							if (seats > 0) {
 								//Use seating alg
@@ -366,7 +366,7 @@ public class TicketingSystem extends JFrame{
 						}
 						catch (Exception exc) {
 							JOptionPane.showMessageDialog(null, "Input must be a number");
-						}*/
+						}
 					}
 				} else if (e.getSource() == exitButton) {//exit button
 					saveFile();
@@ -540,6 +540,7 @@ public class TicketingSystem extends JFrame{
 					}
 					if (valid) {
 						//Double check for students with same names and convert names to student numbers
+						boolean cancel = false;
 						for (int i = 0; i < friends.size(); i++) {
 							ArrayList<Student> results = findStudent(friends.get(i));
 							if (results == null) {
@@ -555,28 +556,35 @@ public class TicketingSystem extends JFrame{
 								for (int j = 0; j < results.size(); j++) {
 									numList[j] = (results.get(j)).getStudentNumber();
 								}
-								Object selectedStudent = JOptionPane.showInputDialog(null, ("Warning: Multiple students found with name " + friends.get(i) + ", please select student number"), "Select Student", JOptionPane.DEFAULT_OPTION, null, numList, "0");
-								friends.set(i, selectedStudent.toString());
+								Object selectedStudent = null;
+								selectedStudent = JOptionPane.showInputDialog(null, ("Warning: Multiple students found with name " + friends.get(i) + ", please select student number"), "Select Student", JOptionPane.DEFAULT_OPTION, null, numList, "0");
+								if (selectedStudent == null) {
+									cancel = true;
+								}
+								else {
+									friends.set(i, selectedStudent.toString());
+								}
 							}
 						}
-						//Add student to arraylist
-						Student newStudent = new Student(name, studentNumber, diet, friends);
-						if (editing) {
-							int index = studentList.indexOf(editStudent);
-							studentList.set(index, newStudent);
+						if (!cancel) {
+							//Add student to arraylist
+							Student newStudent = new Student(name, studentNumber, diet, friends);
+							if (editing) {
+								int index = studentList.indexOf(editStudent);
+								studentList.set(index, newStudent);
+							} else {
+								studentList.add(newStudent);
+							}
+							//saves the file automatically
+							saveFile();
+							//Close window
+							window.remove(addPanel);
+							mainPanel.setBackground(Color.CYAN);
+							window.add(mainPanel, BorderLayout.CENTER);
+							window.repaint();
+							window.pack();
+							window.setSize(width, height);
 						}
-						else {
-							studentList.add(newStudent);
-						}
-						//saves the file automatically
-						saveFile();
-						//Close window
-						window.remove(addPanel);
-						mainPanel.setBackground(Color.CYAN);
-						window.add(mainPanel, BorderLayout.CENTER);
-						window.repaint();
-						window.pack();
-						window.setSize(width, height);
 						//Reset fields
 					}
 				}
@@ -680,7 +688,6 @@ public class TicketingSystem extends JFrame{
 			this.add(tablePanel);
 			buttonPanel.setBackground(Color.BLUE);
 			this.add(buttonPanel);
-
 		}
 
 		//for when something is clicked
@@ -688,34 +695,42 @@ public class TicketingSystem extends JFrame{
 			public void actionPerformed(ActionEvent e) throws NullPointerException {
 				if (e.getSource() == editButton) {
 					//Get student to edit
-					String searchStudent = JOptionPane.showInputDialog(null, "Enter student number or name:", "Edit Student", JOptionPane.PLAIN_MESSAGE);
-					ArrayList<Student> results = findStudent(searchStudent);
-					//If no student found
-					if (results == null) {
-						JOptionPane.showMessageDialog(null,"No student found with that student number or name");
-					}
-					else {
-						Student match = null;
-						//One student found
-						if (results.size() == 1) {
+					String searchStudent = null;
+					searchStudent = JOptionPane.showInputDialog(null, "Enter student number or name:", "Edit Student", JOptionPane.PLAIN_MESSAGE);
+
+					if (searchStudent != null) {
+						ArrayList<Student> results = findStudent(searchStudent);
+						//If no student found
+						if (results == null) {
+							JOptionPane.showMessageDialog(null, "No student found with that student number or name");
+						} else {
+							Student match = null;
+							Object selectedStudent = null;
+							//One student found
+							if (results.size() == 1) {
 								match = results.get(0);
-						}
-						//Multiple students found
-						else if (results.size() > 1) {
-							String[] numList = new String[results.size()];
-							for (int i = 0; i < results.size(); i++) {
-								numList[i] = (results.get(i)).getStudentNumber();
 							}
-							Object selectedStudent = JOptionPane.showInputDialog(null, ("Warning: Multiple students found with name " + searchStudent + ", please select student number"), "Select Student", JOptionPane.DEFAULT_OPTION, null, numList, "0");
-							match = (findStudent(selectedStudent.toString())).get(0);
+							//Multiple students found
+							else if (results.size() > 1) {
+								String[] numList = new String[results.size()];
+								for (int i = 0; i < results.size(); i++) {
+									numList[i] = (results.get(i)).getStudentNumber();
+								}
+								selectedStudent = JOptionPane.showInputDialog(null, ("Warning: Multiple students found with name " + searchStudent + ", please select student number"), "Select Student", JOptionPane.DEFAULT_OPTION, null, numList, "0");
+								if (selectedStudent != null) {
+									match = (findStudent(selectedStudent.toString())).get(0);
+								}
+							}
+							if (selectedStudent != null) {
+								window.remove(listPanel);
+								addPanel = new AddStudentPanel(match);
+								addPanel.setBackground(Color.CYAN);
+								window.add(addPanel);
+								window.repaint();
+								window.pack();
+								window.setSize(width, height);
+							}
 						}
-						window.remove(listPanel);
-						addPanel = new AddStudentPanel(match);
-						addPanel.setBackground(Color.CYAN);
-						window.add(addPanel);
-						window.repaint();
-						window.pack();
-						window.setSize(width, height);
 					}
 				}
 				if (e.getSource() == backButton) {
