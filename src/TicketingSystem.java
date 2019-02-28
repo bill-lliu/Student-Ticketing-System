@@ -58,11 +58,11 @@ public class TicketingSystem extends JFrame{
 	private int height = 700;
 
 	//main method
-	public static void main(String[] args) {
+	public static void run() {
 		window = new TicketingSystem();
 	}
 
-	
+
 	//-------------functions for the class-----------------
 	//Gets a student when given student number OR name
 	private ArrayList<Student> findStudent(String identifier) {
@@ -168,8 +168,9 @@ public class TicketingSystem extends JFrame{
 	}
 
 	//----------------------Initial System Constructor-------------------
-	private TicketingSystem() {
+	TicketingSystem() {
 		super("Ticketing System");
+		window = this;
 
 		//sets the font
 		setUIFont (new javax.swing.plaf.FontUIResource("Century Gothic",Font.PLAIN,24));
