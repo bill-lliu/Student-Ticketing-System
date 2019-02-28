@@ -131,8 +131,9 @@ public class TicketingSystem extends JFrame{
 				toPrint += studentList.get(i).getName()+",";
 				toPrint += studentList.get(i).getStudentNumber()+",";
 				tmpDietList = studentList.get(i).getDietaryRestrictions();
-				tmpDietList.replace("[", "\""); //changes brackets to quotation marks
-				tmpDietList.replace("]", "\""); //changes brackets to quotation marks
+				toPrint += tmpDietList;
+				toPrint.replace("[", "\""); //changes brackets to quotation marks
+				toPrint.replace("]", "\""); //changes brackets to quotation marks
 
 				subCuts = cuts.split(",");
 				subCuts.replace("[","\"");
