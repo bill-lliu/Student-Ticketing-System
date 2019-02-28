@@ -118,56 +118,20 @@ public class TicketingSystem extends JFrame{
 			PrintWriter pw = new PrintWriter(bw);
 			ArrayList<String> tmpDietList = new ArrayList<String>();
 			ArrayList<String> tmpFriendsList = new ArrayList<String>();
-			String[] tmpDietCut;
-			String[] tmpFriendsCut;
 			String toPrint = "";
 			//headers
 			pw.print("Name, Student Number, Dietary Restrictions, Friends"+'\n');
 			//pw.flush();
 		    //adds each student
 			for (int i=0; i<studentList.size(); i++) {
-				
-
 				toPrint += studentList.get(i).getName()+",";
 				toPrint += studentList.get(i).getStudentNumber()+",";
-				tmpDietList = studentList.get(i).getDietaryRestrictions();
-				toPrint += tmpDietList;
+				tmpDietList = studentList.get(i).getDietaryRestrictions(); //gets tmp veriables
+				toPrint += tmpDietList + ",";
+				tmpFriendsList = studentList.get(i).getFriendStudentNumbers();
+				toPrint += tmpFriendsList + ",";
 				toPrint.replace("[", "\""); //changes brackets to quotation marks
-				toPrint.replace("]", "\""); //changes brackets to quotation marks
-
-				subCuts = cuts.split(",");
-				subCuts.replace("[","\"");
-				for (int i = 0; i < tempFriends.length; i++) {
-					if (!tempFriends[i].equals("")) {
-						friends.add(tempFriends[i].trim());
-					}
-				}
-				pw.print(studentList.get(i).getDietaryRestrictions()+",");
-				pw.print(studentList.get(i).getFriendStudentNumbers());
-				//For csv files, don't split commas inside of quotation marks
-				String[] tmpStrings = nextLine.split(",(?=([^\"]*\"[^\"]*\")*[^\"]*$)", -1);
-
-				//trims off spaces of each variable that may have been entered
-				for (int i=0; i<tmpStrings.length; i++) {
-					tmpStrings[i] = tmpStrings[i].trim();
-				}
-
-				//changes the diet restriction from a string to an array list
-				String[] tmpDietResString = tmpStrings[2].split(",");
-				ArrayList<String> tmpDietResList = new ArrayList<String>();
-				for (int i=0; i<tmpDietResString.length; i++) {//trimming spaces
-					tmpDietResString[i] = tmpDietResString[i].replace("\"", ""); //strip quotation marks
-					tmpDietResList.add(tmpDietResString[i].trim());//adding to temporary array list
-				}
-				//changes the friends's student numbers from a string to an array list
-				String[] tmpStudentNumString = tmpStrings[3].split(",");
-				ArrayList<String> tmpStudentNumList = new ArrayList<String>();
-				for (int i=0; i<tmpStudentNumString.length; i++) {//trimming spaces
-					tmpStudentNumString[i] = tmpStudentNumString[i].replace("\"", ""); //strip quotation marks
-					tmpStudentNumList.add(tmpStudentNumString[i].trim());//adding to temporary array list
-				}
-				
-				
+				toPrint.replace("]", "\"");
 				pw.print(toPrint + '\n');
 			    //pw.flush();
 				
