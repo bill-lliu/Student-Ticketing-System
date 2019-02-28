@@ -14,13 +14,15 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import javax.swing.UIManager;
+
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
-import java.awt.FlowLayout;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Graphics;
 import java.awt.Toolkit;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.Color;
+import java.awt.Dimension;
 //Keyboard and mouse imports
 import java.awt.event.WindowEvent;
 import java.awt.event.ActionEvent;
@@ -54,6 +56,8 @@ public class TicketingSystem extends JFrame{
 	private JPanel addPanel;
 	private static ArrayList<Student> studentList = new ArrayList<Student>();
 	private static String eventName;
+	private int width = 1200; //used to set size of display panel
+	private int height = 700;
 
 	//main method
 	public static void main(String[] args) {
@@ -126,12 +130,12 @@ public class TicketingSystem extends JFrame{
 			for (int i=0; i<studentList.size(); i++) {
 				toPrint += studentList.get(i).getName()+",";
 				toPrint += studentList.get(i).getStudentNumber()+",";
-				tmpDietList = studentList.get(i).getDietaryRestrictions(); //gets tmp veriables
+				tmpDietList = studentList.get(i).getDietaryRestrictions(); //gets tmp variables
 				toPrint += tmpDietList + ",";
 				tmpFriendsList = studentList.get(i).getFriendStudentNumbers();
-				toPrint += tmpFriendsList + ",";
-				toPrint.replace("[", "\""); //changes brackets to quotation marks
-				toPrint.replace("]", "\"");
+				toPrint += tmpFriendsList;
+				toPrint = toPrint.replace("[", "\""); //changes brackets to quotation marks
+				toPrint = toPrint.replace("]", "\"");
 				pw.print(toPrint + '\n');
 			    //pw.flush();
 				
@@ -151,14 +155,30 @@ public class TicketingSystem extends JFrame{
 	      System.out.println("error while saving");
 		}
 	}
+	
+	
+	//changing font
+	public static void setUIFont (javax.swing.plaf.FontUIResource f){
+		java.util.Enumeration keys = UIManager.getDefaults().keys();
+		while (keys.hasMoreElements()) {
+	    	Object key = keys.nextElement();
+	    	Object value = UIManager.get (key);
+	    	if (value instanceof javax.swing.plaf.FontUIResource) {
+	    		UIManager.put (key, f);
+	    	}
+	    }
+	}
 
 	//----------------------Initial System Constructor-------------------
 	private TicketingSystem() {
 		super("Ticketing System");
 
+		//sets the font
+		setUIFont (new javax.swing.plaf.FontUIResource("Century Gothic",Font.PLAIN,20));
+		
 		//the program will try to find the event data which is saved as a text file
 		//if the file does not exist, it will generate a new file with this name
-
+		
 		//asks the user for the name of the file
 		eventName = JOptionPane.showInputDialog(null, "What is the name of your event?" + "\n" + "(Enter a new name for a new event)", "RHHS Event Organizer", JOptionPane.PLAIN_MESSAGE);
 
@@ -241,23 +261,20 @@ public class TicketingSystem extends JFrame{
 
 		}
 
-		//***********starts the panel***************
-		// Set the frame to full screen
+		//***********starts the panel**************
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		this.setSize(Toolkit.getDefaultToolkit().getScreenSize());
-		//this.setUndecorated(true);  //Set to true to remove title bar
-		//frame.setResizable(false);
-
-		//Set up the display panel
-
 		mainPanel = new HomePagePanel();
 		addPanel = new AddStudentPanel();
 		this.setLayout(new BorderLayout());
 		this.add(mainPanel, BorderLayout.CENTER);
 		this.setTitle(eventName);
 		this.pack();
+		this.setSize(width, height);
+		this.getContentPane().setBackground(Color.CYAN);
 		this.setVisible(true);
 		this.requestFocusInWindow(); //make sure the frame has focus
+		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();//moves window to the middle of the screen
+		this.setLocation(dim.width/2-this.getSize().width/2, dim.height/2-this.getSize().height/2);
 
 
 	}//end of constructor
@@ -266,6 +283,7 @@ public class TicketingSystem extends JFrame{
 	//---------------------------Home Page Display---------------------------
 	private class HomePagePanel extends JPanel {
 		ClickListener click = new ClickListener();
+		//creates the parts of homepage
 		JLabel greetingLabel = new JLabel("<html>Welcome to Seat Planner Pro!<br/>I would like to...</html>");
 		JLabel blankLabel1 = new JLabel(" ");
 		JLabel blankLabel2 = new JLabel(" ");
@@ -280,7 +298,8 @@ public class TicketingSystem extends JFrame{
 		JButton floorPlanButton = new JButton("View Floor Plan");
 		//JButton editButton = new JButton("Edit Student");
 		HomePagePanel() {
-			this.setLayout(new GridLayout(4,3,10,10));
+			//adds parts in the right order
+			this.setLayout(new GridLayout(4,3,100,100));
 			this.add(blankLabel1);
 			this.add(blankLabel2);
 			this.add(exitButton);
@@ -297,36 +316,40 @@ public class TicketingSystem extends JFrame{
 			listButton.addActionListener(click);
 			addButton.addActionListener(click);
 			floorPlanButton.addActionListener(click);
+			this.setBackground(Color.CYAN);
 		}
 
-		public void paintComponent(Graphics g) {
+		/*public void paintComponent(Graphics g) {
 			super.paintComponent(g); //required
 			setDoubleBuffered(true);
 
-			//insert here stuff that would happen every frame
+		}*/
 
-		}
-
+		//for what happens when something is clicked
 		private class ClickListener implements ActionListener {
 			public void actionPerformed(ActionEvent e) {
-				if (e.getSource() == listButton) {
+				if (e.getSource() == listButton) {//list all student button
 					window.remove(mainPanel);
 					listPanel = new StudentListPanel();
+					listPanel.setBackground(Color.CYAN);
 					window.add(listPanel, BorderLayout.CENTER);
 					window.repaint();
 					window.pack();
-				} else if (e.getSource() == addButton) {
+					window.setSize(width, height);
+				} else if (e.getSource() == addButton) {//add student button
 					window.remove(mainPanel);
 					addPanel = new AddStudentPanel();
+					addPanel.setBackground(Color.CYAN);
 					window.add(addPanel, BorderLayout.CENTER);
 					window.repaint();
 					window.pack();
-				} else if (e.getSource() == floorPlanButton) {
+					window.setSize(width, height);
+				} else if (e.getSource() == floorPlanButton) {//generate floorplan button
 					int seats = 0;
 					String input = null;
 					input = JOptionPane.showInputDialog(null, "Enter number of seats per table:");
-					/*if (input != null) {
-						try {
+					if (input != null) {
+						/*try {
 							seats = Integer.parseInt(input);
 							if (seats > 0) {
 								//Use seating alg
@@ -344,13 +367,11 @@ public class TicketingSystem extends JFrame{
 						}
 						catch (Exception exc) {
 							JOptionPane.showMessageDialog(null, "Input must be a number");
-						}
-					}*/
-				} else if (e.getSource() == exitButton) {
+						}*/
+					}
+				} else if (e.getSource() == exitButton) {//exit button
 					saveFile();
 					window.dispatchEvent(new WindowEvent(window, WindowEvent.WINDOW_CLOSING));
-					//nothing NEEDS to save; as everything already auto-saves after every edit
-					//this is simply to double check and save again
 				}
 			}
 		}
@@ -390,7 +411,7 @@ public class TicketingSystem extends JFrame{
 
 		//Create a new student
 		AddStudentPanel() {
-			this.setLayout(new GridLayout(6,2,10,10));
+			this.setLayout(new GridLayout(6,2,60,60));
 			//Add to panel
 			this.add(nameLabel);
 			this.add(nameField);
@@ -414,7 +435,7 @@ public class TicketingSystem extends JFrame{
 		AddStudentPanel(Student student) {
 			editStudent = student;
 			editing = true;
-			this.setLayout(new GridLayout(6,2,10,10));
+			this.setLayout(new GridLayout(6,2,60,60));
 			//Edit addButton
 			addButton = new JButton("Save Student");
 			//Fill panels
@@ -452,6 +473,7 @@ public class TicketingSystem extends JFrame{
 			addButton.addActionListener(click);
 		}
 
+		//for when something is clicked
 		private class ClickListener implements ActionListener {
 			public void actionPerformed(ActionEvent e) {
 				if (e.getSource() == addButton) {
@@ -551,9 +573,11 @@ public class TicketingSystem extends JFrame{
 						saveFile();
 						//Close window
 						window.remove(addPanel);
+						mainPanel.setBackground(Color.CYAN);
 						window.add(mainPanel, BorderLayout.CENTER);
 						window.repaint();
 						window.pack();
+						window.setSize(width, height);
 						//Reset fields
 					}
 				}
@@ -566,26 +590,30 @@ public class TicketingSystem extends JFrame{
 						saveFile();
 						//Close window
 						window.remove(addPanel);
+						mainPanel.setBackground(Color.CYAN);
 						window.add(mainPanel, BorderLayout.CENTER);
 						window.repaint();
 						window.pack();
+						window.setSize(width, height);
 					}
 				}
 				if (e.getSource() == cancelButton) {
 					//Close window
 					window.remove(addPanel);
+					mainPanel.setBackground(Color.CYAN);
 					window.add(mainPanel, BorderLayout.CENTER);
 					window.repaint();
 					window.pack();
+					window.setSize(width, height);
 				}
 			}
 		}
 
-		public void paintComponent(Graphics g) {
+		/*public void paintComponent(Graphics g) {
 			super.paintComponent(g); //required
 			setDoubleBuffered(true);
 
-		}
+		}*/
 	}
 
 
@@ -631,6 +659,7 @@ public class TicketingSystem extends JFrame{
 			//Create JTable
 			JPanel tablePanel = new JPanel(new BorderLayout());
 			JTable table = new JTable(data, columnNames);
+			table.setRowHeight(30);
 			table.setEnabled(false);
 			//Create JScrollPane
 			JScrollPane sp = new JScrollPane(table);
@@ -653,6 +682,7 @@ public class TicketingSystem extends JFrame{
 
 		}
 
+		//for when something is clicked
 		private class ClickListener implements ActionListener {
 			public void actionPerformed(ActionEvent e) throws NullPointerException {
 				if (e.getSource() == editButton) {
@@ -680,24 +710,28 @@ public class TicketingSystem extends JFrame{
 						}
 						window.remove(listPanel);
 						addPanel = new AddStudentPanel(match);
+						addPanel.setBackground(Color.CYAN);
 						window.add(addPanel);
 						window.repaint();
 						window.pack();
+						window.setSize(width, height);
 					}
 				}
 				if (e.getSource() == backButton) {
 					window.remove(listPanel);
+					mainPanel.setBackground(Color.CYAN);
 					window.add(mainPanel, BorderLayout.CENTER);
 					window.repaint();
 					window.pack();
+					window.setSize(width, height);
 				}
 			}
 		}
 
-		public void paintComponent(Graphics g) {
+		/*public void paintComponent(Graphics g) {
 			super.paintComponent(g); //required
 			setDoubleBuffered(true);
 
-		}
+		}*/
 	}
 }
