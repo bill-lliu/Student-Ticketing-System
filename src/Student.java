@@ -1,3 +1,8 @@
+/* February 11, 2019
+ * Bill Liu and Victor Lin
+ * Student.java
+ */
+
 import java.util.ArrayList;
 
 /**

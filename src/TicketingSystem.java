@@ -15,7 +15,6 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
-
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.awt.Toolkit;
@@ -57,24 +56,18 @@ public class TicketingSystem extends JFrame{
 	private int width = 1200; //used to set size of display panel
 	private int height = 700;
 
-	//main method
-	public static void run() {
-		window = new TicketingSystem();
-	}
-
-
 	//-------------functions for the class-----------------
 	//Gets a student when given student number OR name
 	private ArrayList<Student> findStudent(String identifier) {
 		ArrayList<Student> possibleStudents = new ArrayList<Student>();
-		//If given a student number
 		//check for blank student
 		if (identifier.equals("")) {
 			return null;
 		}
+		//If a student number is given
 		if (isNumber(identifier)) {
 			for (Student student : studentList) {
-				//Assume only one student with student number
+				//Assume only one student assigned to each student number
 				if ((student.getStudentNumber()).equals(identifier)) {
 					possibleStudents.add(student);
 					return possibleStudents;
@@ -83,6 +76,7 @@ public class TicketingSystem extends JFrame{
 		}
 		//If given a student name
 		else {
+			//Need to check for multiple students with the same name
 			for (Student student : studentList) {
 				if (((student.getName().toLowerCase())).equals(identifier.toLowerCase())) {
 					possibleStudents.add(student);
@@ -91,17 +85,17 @@ public class TicketingSystem extends JFrame{
 			//return list if there's at least one person
 			if (!(possibleStudents.isEmpty())) return possibleStudents;
 		}
-		//If student not found
+		//If no student found
 		return null;
 	}
 
 	//checks if entity is a number
 	private boolean isNumber(String text) {
-		//Is a student number
+		//Is a number
 		try {
 			Integer.parseInt(text);
 		}
-		//Is student name
+		//Is not a number
 		catch (NumberFormatException | NullPointerException e) {
 			return false;
 		}
@@ -110,7 +104,7 @@ public class TicketingSystem extends JFrame{
 	
 	
 	//function to save csv file
-	static void saveFile() {
+	private static void saveFile() {
 		//new information written to a temporary file
 		File oldFile = new File(eventName+".csv");
 		File newFile = new File("tmp.csv");
@@ -153,8 +147,7 @@ public class TicketingSystem extends JFrame{
 	      System.out.println("error while saving");
 		}
 	}
-	
-	
+
 	//changing font
 	public static void setUIFont (javax.swing.plaf.FontUIResource f){
 		java.util.Enumeration keys = UIManager.getDefaults().keys();
@@ -319,12 +312,6 @@ public class TicketingSystem extends JFrame{
 			this.setBackground(Color.CYAN);
 		}
 
-		/*public void paintComponent(Graphics g) {
-			super.paintComponent(g); //required
-			setDoubleBuffered(true);
-
-		}*/
-
 		//for what happens when something is clicked
 		private class ClickListener implements ActionListener {
 			public void actionPerformed(ActionEvent e) {
@@ -347,6 +334,7 @@ public class TicketingSystem extends JFrame{
 				} else if (e.getSource() == floorPlanButton) {//generate floorplan button
 					int seats = 0;
 					String input = null;
+					//ask for number of seats per table
 					input = JOptionPane.showInputDialog(null, "Enter number of seats per table:");
 					if (input != null) {
 						try {
@@ -384,6 +372,8 @@ public class TicketingSystem extends JFrame{
 	private class AddStudentPanel extends JPanel {
 		//read class at your own risk
 		//will cause decrease in brain cells
+
+		//variables used if called from edit student button
 		Student editStudent = null;
 		boolean editing = false;
 
@@ -436,9 +426,9 @@ public class TicketingSystem extends JFrame{
 			editStudent = student;
 			editing = true;
 			this.setLayout(new GridLayout(6,2,60,60));
-			//Edit addButton
+			//Change button text of addButton
 			addButton = new JButton("Save Student");
-			//Fill panels
+			//Fill panels with preexisting information
 			nameField.setText(student.getName());
 			stuNumField.setText(student.getStudentNumber());
 			String tempDiet = "";
@@ -476,10 +466,11 @@ public class TicketingSystem extends JFrame{
 		//for when something is clicked
 		private class ClickListener implements ActionListener {
 			public void actionPerformed(ActionEvent e) {
+				//add student button
 				if (e.getSource() == addButton) {
 					//Begin by assuming input is valid
 					boolean valid = true;
-					//Get all fields
+					//Get all text in fields
 					String name = nameField.getText().trim();
 					String studentNumber = stuNumField.getText().trim();
 					ArrayList<String> diet = new ArrayList<String>();
@@ -499,6 +490,7 @@ public class TicketingSystem extends JFrame{
 						valid = false;
 						JOptionPane.showMessageDialog(null, "Name field required");
 					}
+					//Check for invalid characters in name
 					else if (!(name.matches("^[a-zA-Z ]*$"))) {
 						valid = false;
 						JOptionPane.showMessageDialog(null, "Name can only contain letters");
@@ -520,12 +512,13 @@ public class TicketingSystem extends JFrame{
 							valid = false;
 							JOptionPane.showMessageDialog(null, "Student number already in use by another student");
 						}
-						//If student being edited has changed student number
+						//If student being edited has changed student number to one already in use
 						else if (!((editStudent.getStudentNumber()).equals(studentNumber))) {
 							valid = false;
 							JOptionPane.showMessageDialog(null, "Student number already in use by another student");
 						}
 					}
+					//Check for invalid characters in dietary restrictions
 					if (tempDiet.length > 0){
 						for (int i = 0; i < tempDiet.length; i++) {
 							if (!(tempDiet[i].matches("^[a-zA-Z ]*$"))) {
@@ -540,16 +533,19 @@ public class TicketingSystem extends JFrame{
 						for (int i = 0; i < friends.size(); i++) {
 							//Only check for names
 							String currentTest = friends.get(i);
+							//Check for invalid characters in friends input
 							if (!(currentTest.matches("^[a-zA-Z0-9 ]*$"))) {
 								valid = false;
 								JOptionPane.showMessageDialog(null, "Student friends must be letters or numbers");
 							}
+							//If given a name, check if there is a user with name in the student list
 							else if (!isNumber(currentTest)) {
 								if ((findStudent(friends.get(i))) == null) {
 									valid = false;
 									invalidStudents += (friends.get(i) + "\n");
 								}
 							}
+							//Display list of invalid friends
 							if (!invalidStudents.equals("")) {
 								JOptionPane.showMessageDialog(null, ("The following students are not in the database:\n") + invalidStudents + "Please replace student names with student numbers and try again.");
 							}
@@ -560,8 +556,10 @@ public class TicketingSystem extends JFrame{
 						boolean cancel = false;
 						for (int i = 0; i < friends.size(); i++) {
 							ArrayList<Student> results = findStudent(friends.get(i));
+
+							//No students found
 							if (results == null) {
-								//no students found
+								//do nothing
 							}
 							//One student found
 							else if (results.size() == 1) {
@@ -574,6 +572,7 @@ public class TicketingSystem extends JFrame{
 									numList[j] = (results.get(j)).getStudentNumber();
 								}
 								Object selectedStudent = null;
+								//Show list of all student numbers with matching name
 								selectedStudent = JOptionPane.showInputDialog(null, ("Warning: Multiple students found with name " + friends.get(i) + ", please select student number"), "Select Student", JOptionPane.DEFAULT_OPTION, null, numList, "0");
 								if (selectedStudent == null) {
 									cancel = true;
@@ -583,13 +582,17 @@ public class TicketingSystem extends JFrame{
 								}
 							}
 						}
+						//If user didn't hit cancel on selecting a student window
 						if (!cancel) {
 							//Add student to arraylist
 							Student newStudent = new Student(name, studentNumber, diet, friends);
+							//If editing, change index
 							if (editing) {
 								int index = studentList.indexOf(editStudent);
 								studentList.set(index, newStudent);
-							} else {
+							}
+							//Otherwise, add the student
+							else {
 								studentList.add(newStudent);
 							}
 							//saves the file automatically
@@ -602,9 +605,9 @@ public class TicketingSystem extends JFrame{
 							window.pack();
 							window.setSize(width, height);
 						}
-						//Reset fields
 					}
 				}
+				//delete student button
 				if (e.getSource() == deleteButton) {
 					//Confirm deletion
 					int reply = JOptionPane.showConfirmDialog(null, "Warning: this action cannot be undone. Are you sure you want to delete this student?", "Confirm Deletion", JOptionPane.YES_NO_OPTION);
@@ -615,7 +618,8 @@ public class TicketingSystem extends JFrame{
 						//Close window
 						window.remove(addPanel);
 						mainPanel.setBackground(Color.CYAN);
-						window.add(mainPanel, BorderLayout.CENTER);
+						//Refresh list panel
+						window.add(listPanel, BorderLayout.CENTER);
 						window.repaint();
 						window.pack();
 						window.setSize(width, height);
@@ -692,6 +696,7 @@ public class TicketingSystem extends JFrame{
 			//Create buttons
 			JPanel buttonPanel = new JPanel(new FlowLayout());
 
+			//Set positions
 			backButton.setVerticalTextPosition(JButton.CENTER);
 			backButton.setHorizontalTextPosition(JButton.CENTER);
 			backButton.addActionListener(click);
@@ -700,6 +705,7 @@ public class TicketingSystem extends JFrame{
 			editButton.setHorizontalTextPosition(JButton.CENTER);
 			editButton.addActionListener(click);
 
+			//Add to panel
 			buttonPanel.add(backButton);
 			buttonPanel.add(editButton);
 			this.add(tablePanel);
@@ -720,7 +726,8 @@ public class TicketingSystem extends JFrame{
 						//If no student found
 						if (results == null) {
 							JOptionPane.showMessageDialog(null, "No student found with that student number or name");
-						} else {
+						}
+						else {
 							Student match = null;
 							Object selectedStudent = null;
 							//One student found
@@ -733,13 +740,16 @@ public class TicketingSystem extends JFrame{
 								for (int i = 0; i < results.size(); i++) {
 									numList[i] = (results.get(i)).getStudentNumber();
 								}
+								//List possible students
 								selectedStudent = JOptionPane.showInputDialog(null, ("Warning: Multiple students found with name " + searchStudent + ", please select student number"), "Select Student", JOptionPane.DEFAULT_OPTION, null, numList, "0");
 								if (selectedStudent != null) {
 									match = (findStudent(selectedStudent.toString())).get(0);
 								}
 							}
-							if (selectedStudent != null) {
+							if (match != null) {
+								//close panel
 								window.remove(listPanel);
+								//create new edit panel
 								addPanel = new AddStudentPanel(match);
 								addPanel.setBackground(Color.CYAN);
 								window.add(addPanel);
@@ -751,6 +761,7 @@ public class TicketingSystem extends JFrame{
 					}
 				}
 				if (e.getSource() == backButton) {
+					//Close panel
 					window.remove(listPanel);
 					mainPanel.setBackground(Color.CYAN);
 					window.add(mainPanel, BorderLayout.CENTER);
@@ -760,11 +771,5 @@ public class TicketingSystem extends JFrame{
 				}
 			}
 		}
-
-		/*public void paintComponent(Graphics g) {
-			super.paintComponent(g); //required
-			setDoubleBuffered(true);
-
-		}*/
 	}
 }
